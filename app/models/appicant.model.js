@@ -47,6 +47,17 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
             through: 'applicant_platform',
             foreignKey: 'applicant_id'
         });
+        
+        db.applicant.belongsToMany(db.keyword, {
+            through: 'applicant_keyword',
+            foreignKey: 'applicant_id'
+        });
+        
+        db.applicant.belongsToMany(db.campaign, {
+            through: 'campaign_applicant',
+            through: 'applicant_image',
+            foreignKey: 'applicant_id'
+        });
     };
 
     return Applicant;

@@ -15,7 +15,7 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     );
 
     Platform.associate = db => {
-        db.platform.belongsToMany(db.applicant, {
+        db.Platform.belongsToMany(db.Applicant, {
             through: 'applicant_platform',
             foreignKey: 'platform_id'
         });
