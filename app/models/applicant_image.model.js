@@ -2,10 +2,10 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
   const ApplicantImage = sequelize.define(
       'applicant_image',
       {
-          applicant_id: {
-              type: Sequelize.INTEGER,
-              allowNull: false,
-          },
+        //   applicant_id: {
+        //       type: Sequelize.INTEGER,
+        //       allowNull: false,
+        //   },
           image_url: {
               type: Sequelize.STRING(200),
               allowNull: false,

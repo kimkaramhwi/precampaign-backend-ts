@@ -2,14 +2,14 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     const ApplicantPlatform = sequelize.define(
         'applicant_platform',
         {
-            applicant_id: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-            },
-            platform_id: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-            },
+            // applicant_id: {
+            //     type: Sequelize.INTEGER,
+            //     allowNull: false,
+            // },
+            // platform_id: {
+            //     type: Sequelize.INTEGER,
+            //     allowNull: false,
+            // },
             account_name: {
                 type: Sequelize.STRING(50),
                 allowNull: false,

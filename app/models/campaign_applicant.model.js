@@ -2,14 +2,14 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
   const CampaignApplicant = sequelize.define(
       'campaign_applicant',
       {
-          campaign_id: {
-              type: Sequelize.INTEGER,
-              allowNull: false,
-          },
-          applicant_id: {
-              type: Sequelize.INTEGER,
-              allowNull: false,
-          },
+        //   campaign_id: {
+        //       type: Sequelize.INTEGER,
+        //       allowNull: false,
+        //   },
+        //   applicant_id: {
+        //       type: Sequelize.INTEGER,
+        //       allowNull: false,
+        //   },
           is_selected: {
               type: Sequelize.BOOLEAN,
               allowNull: false,

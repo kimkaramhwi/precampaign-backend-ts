@@ -2,14 +2,14 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     const ApplicantKeyword = sequelize.define(
         'applicant_keyword',
         {
-            applicant_id: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-            },
-            keyword_id: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-            },
+            // applicant_id: {
+            //     type: Sequelize.INTEGER,
+            //     allowNull: false,
+            // },
+            // keyword_id: {
+            //     type: Sequelize.INTEGER,
+            //     allowNull: false,
+            // },
         }, 
         {
             timestamps: false,
