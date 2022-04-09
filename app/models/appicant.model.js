@@ -45,7 +45,7 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     Applicant.associate = db => {
         db.applicant.belongsToMany(db.platform, {
             through: 'applicant_platform',
-            foreignKey: 'applicants_id'
+            foreignKey: 'applicant_id'
         });
         
         db.applicant.belongsToMany(db.keyword, {
@@ -55,7 +55,6 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
         
         db.applicant.belongsToMany(db.campaign, {
             through: 'campaign_applicant',
-            through: 'applicant_image',
             foreignKey: 'applicant_id'
         });
     };
