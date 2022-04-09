@@ -13,5 +13,13 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
             collate: 'utf8_general_ci',
         }
     );
-    return Keyword;
+
+    Keyword.associate = db => {
+        db.Keyword.belongsToMany(db.Applicant, {
+            through: 'applicant_keyword',
+            foreignKey: 'keyword_id'
+        });
+    };
+
+    return Keyword;  
 };

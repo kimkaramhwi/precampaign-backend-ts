@@ -38,13 +38,24 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
         {
             timestamps: true,
             charset: 'utf8',
-            collate: 'utf8_general_ci',
+            collate: 'utf8_general_ci'
         }
     );
 
     Applicant.associate = db => {
         db.applicant.belongsToMany(db.platform, {
             through: 'applicant_platform',
+            foreignKey: 'applicants_id'
+        });
+        
+        db.applicant.belongsToMany(db.keyword, {
+            through: 'applicant_keyword',
+            foreignKey: 'applicant_id'
+        });
+        
+        db.applicant.belongsToMany(db.campaign, {
+            through: 'campaign_applicant',
+            through: 'applicant_image',
             foreignKey: 'applicant_id'
         });
     };

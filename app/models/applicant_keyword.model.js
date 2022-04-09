@@ -1,19 +1,15 @@
 module.exports = (sequelize, Sequelize, DataTypes) => {
-    const ApplicantPlatform = sequelize.define(
-        'applicant_platform',
+    const ApplicantKeyword = sequelize.define(
+        'applicant_keyword',
         {
             // applicant_id: {
             //     type: Sequelize.INTEGER,
             //     allowNull: false,
             // },
-            // platform_id: {
+            // keyword_id: {
             //     type: Sequelize.INTEGER,
             //     allowNull: false,
             // },
-            account_name: {
-                type: Sequelize.STRING(50),
-                allowNull: false,
-            }
         }, 
         {
             timestamps: false,
@@ -23,17 +19,17 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
         }
     );
     
-    ApplicantPlatform.associate = db => {
-        db.ApplicantPlatform.belongsTo(db.Applicant, {
+    ApplicantKeyword.associate = db => {
+        db.ApplicantKeyword.belongsTo(db.Applicant, {
             as: 'applicant',
             foreignKey: 'applicant_id'
         });
         
-        db.ApplicantPlatform.belongsTo(db.Platform, {
-            as: 'platform',
-            foreignKey: 'platform_id'
+        db.ApplicantKeyword.belongsTo(db.Keyword, {
+            as: 'keyword',
+            foreignKey: 'Keyword_id'
         });
     };
 
-    return ApplicantPlatform;
+    return ApplicantKeyword;
 };

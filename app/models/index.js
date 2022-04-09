@@ -26,10 +26,15 @@ db.Op = Op;
 db.sequelize = sequelize;
 
 db.user = require("./user.model")(sequelize, Sequelize, DataTypes);
+db.campaign = require("./campaign.model")(sequelize, Sequelize, DataTypes);
 db.applicant = require("./appicant.model")(sequelize, Sequelize, DataTypes);
 db.platform = require("./platform.model")(sequelize, Sequelize, DataTypes);
 db.keyword = require("./keyword.model")(sequelize, Sequelize, DataTypes);
 db.applicant_platform = require("./applicant_platform.model")(sequelize, Sequelize, DataTypes);
+db.applicant_keyword = require("./applicant_keyword.model")(sequelize, Sequelize, DataTypes);
+db.applicant_image = require("./applicant_image.model")(sequelize, Sequelize, DataTypes);
+db.campaign_applicant = require("./campaign_applicant.model")(sequelize, Sequelize, DataTypes);
+db.rate = require("./rate.model")(sequelize, Sequelize, DataTypes);
 
 
 module.exports = db;
