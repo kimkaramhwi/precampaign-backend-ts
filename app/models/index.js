@@ -36,5 +36,4 @@ db.applicant_image = require("./applicant_image.model")(sequelize, Sequelize, Da
 db.campaign_applicant = require("./campaign_applicant.model")(sequelize, Sequelize, DataTypes);
 db.rate = require("./rate.model")(sequelize, Sequelize, DataTypes);
 
-
 module.exports = db;

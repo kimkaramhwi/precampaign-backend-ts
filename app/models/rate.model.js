@@ -2,13 +2,27 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     const Rate = sequelize.define(
         'rate',
         {
+            id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+            },
             campaign_applicant_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
+                references: {
+                    model: 'campaign_applicant',
+                    key: 'id',
+                }
             },
             user_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
+                references: {
+                    model: 'users',
+                    key: 'id',
+                }
             },
             background_rate: {
                 type: Sequelize.FLOAT,
@@ -29,16 +43,6 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
             collate: 'utf8_general_ci',
         }
     );
-    
-    Rate.associate = db => {
-        db.Rate.belongsTo(db.CampaignApplicant, {
-            foreignKey: 'campaign_applicant_id'
-        });
-        
-        db.Rate.belongsTo(db.User, {
-            foreignKey: 'user_id'
-        });
-    };
 
     return Rate;
 };

@@ -2,6 +2,12 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     const Platform = sequelize.define(
         'platform',
         {
+            id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+            },
             name: {
                 type: Sequelize.STRING(20),
                 allowNull: false,
@@ -13,13 +19,6 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
             collate: 'utf8_general_ci',
         }
     );
-
-    Platform.associate = db => {
-        db.Platform.belongsToMany(db.Applicant, {
-            through: 'applicant_platform',
-            foreignKey: 'platform_id'
-        });
-    };
 
     return Platform;
 };

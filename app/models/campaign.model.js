@@ -2,6 +2,12 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     const Campaign = sequelize.define(
         'campaign',
         {
+            id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+            },
             name: {
                 type: Sequelize.STRING(50),
                 allowNull: false,
@@ -33,13 +39,6 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
             collate: 'utf8_general_ci',
         }
     );
-    
-    Campaign.associate = db => {
-        db.Campaign.belongsToMany(db.Applicant, {
-            through: 'campaign_applicant',
-            foreignKey: 'campaign_id'
-        });
-    };
 
     return Campaign;
 };

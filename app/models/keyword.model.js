@@ -2,6 +2,12 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     const Keyword = sequelize.define(
         'keyword',
         {
+            id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+            },
             name: {
                 type: Sequelize.STRING(20),
                 allowNull: false,
@@ -13,13 +19,6 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
             collate: 'utf8_general_ci',
         }
     );
-
-    Keyword.associate = db => {
-        db.Keyword.belongsToMany(db.Applicant, {
-            through: 'applicant_keyword',
-            foreignKey: 'keyword_id'
-        });
-    };
-
+    
     return Keyword;  
 };
