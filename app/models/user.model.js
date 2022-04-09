@@ -2,6 +2,12 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     const User = sequelize.define(
         'user',
         {
+            id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+            },
             email: {
                 type: Sequelize.STRING(50),
                 allowNull: false,
@@ -23,11 +29,5 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
         }
     );
 
-    User.associate = db => {
-        db.User.belongsToMany(db.CampaignApplicant, {
-            through: 'rate',
-            foreignKey: 'user_id'
-        });
-    };
     return User;
 };

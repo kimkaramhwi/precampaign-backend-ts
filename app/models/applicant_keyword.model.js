@@ -2,13 +2,27 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     const ApplicantKeyword = sequelize.define(
         'applicant_keyword',
         {
+            id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+            },
             applicant_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
+                references: {
+                    model: 'applicants',
+                    key: 'id',
+                }
             },
             keyword_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
+                references: {
+                    model: 'keywords',
+                    key: 'id',
+                }
             },
         },
         {
@@ -18,18 +32,6 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
             freezeTableName: true
         }
     );
-    
-    ApplicantKeyword.associate = db => {
-        db.ApplicantKeyword.belongsTo(db.Applicant, {
-            as: 'applicant',
-            foreignKey: 'applicant_id'
-        });
-        
-        db.ApplicantKeyword.belongsTo(db.Keyword, {
-            as: 'keyword',
-            foreignKey: 'keyword_id'
-        });
-    };
 
     return ApplicantKeyword;
 };

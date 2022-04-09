@@ -2,13 +2,27 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     const ApplicantPlatform = sequelize.define(
         'applicant_platform',
         {
+            id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+            },
             applicant_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
+                references: {
+                    model: 'applicants',
+                    key: 'id',
+                }
             },
             platform_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
+                references: {
+                    model: 'platforms',
+                    key: 'id',
+                }
             },
             account_name: {
                 type: Sequelize.STRING(50),
@@ -22,18 +36,6 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
             freezeTableName: true
         }
     );
-    
-    ApplicantPlatform.associate = db => {
-        db.ApplicantPlatform.belongsTo(db.Applicant, {
-            as: 'applicant',
-            foreignKey: 'applicant_id'
-        });
-        
-        db.ApplicantPlatform.belongsTo(db.Platform, {
-            as: 'platform',
-            foreignKey: 'platform_id'
-        });
-    };
 
     return ApplicantPlatform;
 };

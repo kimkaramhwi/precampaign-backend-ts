@@ -2,6 +2,12 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     const Applicant = sequelize.define(
         'applicant',
         {
+            id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+            },
             name: {
                 type: Sequelize.STRING(100),
                 allowNull: false,
@@ -41,23 +47,6 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
             collate: 'utf8_general_ci'
         }
     );
-
-    Applicant.associate = db => {
-        db.applicant.belongsToMany(db.platform, {
-            through: 'applicant_platform',
-            foreignKey: 'applicant_id'
-        });
-        
-        db.applicant.belongsToMany(db.keyword, {
-            through: 'applicant_keyword',
-            foreignKey: 'applicant_id'
-        });
-        
-        db.applicant.belongsToMany(db.campaign, {
-            through: 'campaign_applicant',
-            foreignKey: 'applicant_id'
-        });
-    };
 
     return Applicant;
 };
