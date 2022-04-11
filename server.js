@@ -16,16 +16,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const db = require("./app/models");
-db.sequelize.sync().then(() => {
-// initial(); // Just use it in development, at the first time execution!. Delete it in production
-});
+db.sequelize.sync();
 
 app.get("/", (req, res) => {
-  res.json({ message: "welcome" });
+  res.json({ message: "Welcome Precampaign!" });
 });
 
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
+require("./app/routes/campaign.routes")(app);
 
 const PORT = config.PORT;
 app.listen(PORT, () => {
