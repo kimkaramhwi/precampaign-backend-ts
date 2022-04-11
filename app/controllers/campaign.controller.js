@@ -41,10 +41,12 @@ exports.findAll = (req, res) => {
 
     if (sort_by === "count") {
         Campaign.findAll({
+            limit: limit, 
+            offset: offset,
             attributes: [
                 'id', 'name', 'status', 'evaluation_start_date', 'evaluation_end_date', 'description', 'thumbnail_url', 'createdAt', 'updatedAt',
-                [sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'ApplicantCount']],
-            order: [[sequelize.literal('ApplicantCount'), 'DESC']]
+                [sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'applicant_count']],
+            order: [[sequelize.literal('applicant_count'), sort_order]]
         })
             .then(data => {
                 res.send(data);

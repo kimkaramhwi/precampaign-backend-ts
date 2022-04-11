@@ -19,7 +19,7 @@ const db = require("./app/models");
 db.sequelize.sync();
 
 app.get("/", (req, res) => {
-  res.json({ message: "welcome" });
+  res.json({ message: "Welcome Precampaign!" });
 });
 
 require("./app/routes/auth.routes")(app);
