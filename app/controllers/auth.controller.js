@@ -51,6 +51,6 @@ exports.signin = (req, res) => {
         });
     })
     .catch(err => {
-      return res.status(500).send({ message: err.message });
+      res.status(500).send({ message: err.message });
     });
 };
