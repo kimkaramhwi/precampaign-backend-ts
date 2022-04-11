@@ -21,7 +21,7 @@ exports.signup = (req, res) => {
 exports.signin = (req, res) => {
   User.findOne({
     where: {
-      name: req.body.name
+      email: req.body.email
     }
   })
     .then(user => {
@@ -51,6 +51,6 @@ exports.signin = (req, res) => {
         });
     })
     .catch(err => {
-      res.status(500).send({ message: err.message });
+      return res.status(500).send({ message: err.message });
     });
 };
