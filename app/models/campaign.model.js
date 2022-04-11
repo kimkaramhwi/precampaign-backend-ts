@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
         },
         status: {
-            type: Sequelize.ENUM('In Progress', 'Complete'),
+            type: Sequelize.ENUM('Ongoing', 'Termination'),
             allowNull: false,
         },
         evaluation_start_date: {
