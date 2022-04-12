@@ -1,5 +1,5 @@
-const config = require("../config/config.js");
-const { Sequelize, DataTypes, Op } = require("sequelize");
+import config from "../config/config";
+import { Sequelize, DataType, Op } from "sequelize";
 
 const sequelize = new Sequelize(
   config.db.DB_NAME,
