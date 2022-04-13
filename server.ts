@@ -1,7 +1,9 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const config = require("./app/config/config.js");
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import routes from "./app/routes/index";
+import config from "./app/config/config";
+import sequelize from "./app/models";
 
 const app = express();
 
@@ -10,21 +12,25 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Expose-Headers", "x-total-count");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH");
+  res.header("Access-Control-Allow-Headers", "Content-Type,authorization");
+  next();
+});
 
-const db = require("./app/models");
-db.sequelize.sync();
+app.use(express.json());
+app.use(routes);
+
+sequelize.sync();
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome Precampaign!" });
 });
-
-require("./app/routes/auth.routes")(app);
-require("./app/routes/user.routes")(app);
-require("./app/routes/campaign.routes")(app);
 
 const PORT = config.PORT;
 app.listen(PORT, () => {
