@@ -49,3 +49,4 @@
 //   );
 //   return Applicant;
 // };
+//# sourceMappingURL=appicant.model.js.map

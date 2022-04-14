@@ -21,3 +21,4 @@
 //   );
 // return Platform;
 // };
+//# sourceMappingURL=platform.model.js.map

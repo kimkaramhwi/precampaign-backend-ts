@@ -1,6 +1,13 @@
 {
+  "ts-node": {
+    "files": true
+  },
+  "files": [
+    "app/types/express.d.ts"
+  ],
   "compilerOptions": {
     "target": "es6",
+    "declaration": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -14,7 +21,7 @@
     "allowJs": true,
     "noEmit": false,
     "esModuleInterop": true,
-    "typeRoots": ["./src/types/express.d.ts", "./node_modules/@types"]
+    "typeRoots": ["./app/types", "./types", "./node_modules/@types"]
   },
   "include": ["./app/**/*", "server.ts"],
   "exclude": ["node_modules"]
