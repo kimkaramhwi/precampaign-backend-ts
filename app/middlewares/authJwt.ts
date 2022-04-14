@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import config from "../config/config";
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
+  const token = req.headers.authorization;
 
   if (!token) {
     return res.status(403).send({
@@ -18,7 +18,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
       });
     }
 
-    req.userId = decoded;
+    req.userId = decoded["id"];
 
     next();
   });
