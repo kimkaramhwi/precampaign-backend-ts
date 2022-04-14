@@ -5,7 +5,8 @@
   "main": "server.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -r dotenv/config server.ts"
+    "dev": "nodemon -r dotenv/config server.ts",
+    "migrate_all": "./node_modules/.bin/ts-node ./app/migrations/createTableAll.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +18,9 @@
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
-    "sequelize": "^6.18.0"
+    "nodemon": "^2.0.15",
+    "sequelize": "^6.18.0",
+    "ts-node": "^10.7.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

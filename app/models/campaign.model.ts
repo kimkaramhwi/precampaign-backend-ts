@@ -18,7 +18,7 @@ export interface ICampaignAttributes {
 
 export interface CampaignCreationAttributes extends Optional<ICampaignAttributes, "id"> {}
 
-class Campaign extends Model<ICampaignAttributes, CampaignCreationAttributes>
+export class Campaign extends Model<ICampaignAttributes, CampaignCreationAttributes>
     implements ICampaignAttributes {
         public id!: number;
         public name!: string;
@@ -64,7 +64,8 @@ Campaign.init({
     }
 }, {
     sequelize,
-    modelName: "Campaigns"
+    modelName: "Campaign",
+    tableName: "campaigns"
 })
 
 export default Campaign;

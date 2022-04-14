@@ -1,40 +1,80 @@
-// module.exports = (sequelize, Sequelize) => {
-//   const ApplicantPlatform = sequelize.define(
-//     'applicant_platform',
-//     {
-//         id: {
-//             type: Sequelize.INTEGER,
-//             allowNull: false,
-//             autoIncrement: true,
-//             primaryKey: true,
-//         },
-//         applicant_id: {
-//             type: Sequelize.INTEGER,
-//             allowNull: false,
-//             references: {
-//                 model: 'applicants',
-//                 key: 'id',
-//             }
-//         },
-//         platform_id: {
-//             type: Sequelize.INTEGER,
-//             allowNull: false,
-//             references: {
-//                 model: 'platforms',
-//                 key: 'id',
-//             }
-//         },
-//         account_name: {
-//             type: Sequelize.STRING(50),
-//             allowNull: false,
-//         }
-//     }, 
-//     {
-//         timestamps: false,
-//         charset: 'utf8',
-//         collate: 'utf8_general_ci',
-//         freezeTableName: true
-//     }
-//   );
-//   return ApplicantPlatform;
-// };
+import { Association, DataTypes, Model, Optional } from 'sequelize'
+import sequelize from './index'
+import { Applicant } from './appicant.model'
+import { Platform } from './platform.model'
+
+export interface IApplicantPlatformAttributes {
+  id?: number;
+  applicant_id: number;
+  platform_id: number;
+  account_name: string;
+  applicantIdPlatform?: any;
+  platformIdApplicant?: any;
+}
+
+export interface ApplicantPlatformCreationAttributes extends Optional<IApplicantPlatformAttributes, 'id'> {}
+
+export class ApplicantPlatform extends Model<IApplicantPlatformAttributes, ApplicantPlatformCreationAttributes>
+  implements IApplicantPlatformAttributes {
+  public id!: number;
+  public name!: string;
+  public applicant_id!: number;
+  public platform_id!: number;
+  public account_name!: string;
+  
+  public static associations: {
+    applicantIdPlatform: Association<Applicant, ApplicantPlatform>
+    platformIdApplicant: Association<Platform, ApplicantPlatform>
+  };
+}
+
+ApplicantPlatform.init(
+  {
+    id: {
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
+    },
+    applicant_id: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+    },
+    platform_id: {
+      allowNull: false,
+      type: DataTypes.INTEGER,
+    },
+    account_name: {
+      allowNull: false,
+      type: DataTypes.STRING(50)
+    }
+  },
+  {
+    modelName: 'ApplicantPlatform',
+    tableName: 'applicant_platform',
+    sequelize,
+    freezeTableName: true,
+    timestamps: false,
+  }
+);
+
+Platform.hasMany(ApplicantPlatform, {
+  sourceKey: 'id',
+  foreignKey: 'platform_id',
+  as: 'platformIdApplicant'
+});
+
+ApplicantPlatform.belongsTo(Platform, {
+  foreignKey: 'platform_id',
+  as: 'platformIdApplicant'
+});
+
+Applicant.hasMany(ApplicantPlatform, {
+  sourceKey: 'id',
+  foreignKey: 'applicant_id',
+  as: 'applicantIdPlatform'
+});
+
+ApplicantPlatform.belongsTo(Applicant, {
+  foreignKey: 'applicant_id',
+  as: 'applicantIdPlatform'
+});

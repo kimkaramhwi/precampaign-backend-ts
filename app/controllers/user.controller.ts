@@ -10,7 +10,7 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
 
   User.findOne({
     where: {
-      email: email
+      email: email || null
     }
   }).then(user => {
     if (user) {
@@ -34,16 +34,17 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-const signin = async (req: Request, res: Response, next: NextFunction) => {
+const signin = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } : IUserAttributes = req.body;
   
+  console.log(req.body.emil);
   User.findOne({
     where: {
       email: email
     }
   })
-    .then(user => {
-      if (!user) {
+  .then(user => {
+    if (!user) {
         return res.status(404).send({ message: "User Not found." });
       }
 
