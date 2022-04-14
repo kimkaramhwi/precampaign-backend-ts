@@ -1,4 +1,4 @@
-import { Association, DataTypes, Model } from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
 import sequelize from './index'
 import { CampaignApplicant } from './campaign_applicant.model'
 
@@ -17,10 +17,6 @@ export class ApplicantImage extends Model<IApplicantImageAttributes>
 
   public readonly createAt!: Date;
   public readonly updateAt!: Date;
-  
-  public static associations: {
-    applicantIdImage: Association<CampaignApplicant, ApplicantImage>
-  };
 }
 
 ApplicantImage.init(
@@ -48,11 +44,11 @@ ApplicantImage.init(
 ApplicantImage.hasMany(CampaignApplicant, {
   sourceKey: 'id',
   foreignKey: 'campaign_applicant_id',
-  as: 'applicantIdImage'
+  onDelete: 'CASCADE',
 });
 
 CampaignApplicant.belongsTo(ApplicantImage, {
-  as: 'applicantIdImage'
+  foreignKey: 'campaign_applicant_id',
 });
 
 export default ApplicantImage;

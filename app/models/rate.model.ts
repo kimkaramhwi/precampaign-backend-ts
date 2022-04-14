@@ -1,4 +1,4 @@
-import { Association, DataTypes, Model } from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
 import sequelize from './index'
 import { CampaignApplicant } from './campaign_applicant.model'
 import { User } from './user.model'
@@ -10,8 +10,6 @@ interface IRateAttributes {
   background_rate: number;
   trend_rate: number;
   creativity_rate: number;
-  userIdCampaignApplicant?: any;
-  campaignApplicantIdUser?: any;
 }
 
 export class Rate extends Model<IRateAttributes>
@@ -22,11 +20,6 @@ export class Rate extends Model<IRateAttributes>
   public background_rate!: number;
   public trend_rate!: number;
   public creativity_rate!: number;
-  
-  public static associations: {
-    campaignApplicantIdUser: Association<CampaignApplicant, Rate>
-    userIdCampaignApplicant: Association<User, Rate>
-  };
 }
 
 Rate.init(
@@ -65,26 +58,36 @@ Rate.init(
   }
 )
 
+CampaignApplicant.belongsToMany(User, {
+  through: 'rate',
+  foreignKey: 'campaign_applicant_id',
+  onDelete: 'CASCADE',
+});
+
 CampaignApplicant.hasMany(Rate, {
   sourceKey: 'id',
   foreignKey: 'campaign_applicant_id',
-  as: 'campaignApplicantIdUser'
 });
 
 Rate.belongsTo(CampaignApplicant, {
   foreignKey: 'campaign_applicant_id',
-  as: 'campaignApplicantIdUser'
+  onDelete: 'CASCADE',
+});
+
+User.belongsToMany(CampaignApplicant, {
+  through: 'rate',
+  foreignKey: 'applicant_id',
+  onDelete: 'CASCADE',
 });
 
 User.hasMany(Rate, {
   sourceKey: 'id',
   foreignKey: 'applicant_id',
-  as: 'userIdCampaignApplicant'
 });
 
 Rate.belongsTo(User, {
   foreignKey: 'applicant_id',
-  as: 'userIdCampaignApplicant'
+  onDelete: 'CASCADE',
 });
 
 export default Rate;

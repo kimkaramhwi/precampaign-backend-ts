@@ -1,4 +1,4 @@
-import { Association, DataTypes, Model } from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
 import sequelize from './index'
 import { Applicant } from './appicant.model'
 import { Platform } from './platform.model'
@@ -8,8 +8,6 @@ export interface IApplicantPlatformAttributes {
   applicant_id: number;
   platform_id: number;
   account_name: string;
-  applicantIdPlatform?: any;
-  platformIdApplicant?: any;
 }
 
 export class ApplicantPlatform extends Model<IApplicantPlatformAttributes>
@@ -19,11 +17,6 @@ export class ApplicantPlatform extends Model<IApplicantPlatformAttributes>
   public applicant_id!: number;
   public platform_id!: number;
   public account_name!: string;
-  
-  public static associations: {
-    applicantIdPlatform: Association<Applicant, ApplicantPlatform>
-    platformIdApplicant: Association<Platform, ApplicantPlatform>
-  };
 }
 
 ApplicantPlatform.init(
@@ -50,29 +43,40 @@ ApplicantPlatform.init(
     modelName: 'applicant_platform',
     sequelize,
     timestamps: false,
+    freezeTableName: true
   }
 )
+
+Platform.belongsToMany(Applicant, {
+  through: 'applicant_platform',
+  foreignKey: 'platform_id',
+  onDelete: 'CASCADE',
+});
 
 Platform.hasMany(ApplicantPlatform, {
   sourceKey: 'id',
   foreignKey: 'platform_id',
-  as: 'platformIdApplicant'
 });
 
 ApplicantPlatform.belongsTo(Platform, {
   foreignKey: 'platform_id',
-  as: 'platformIdApplicant'
+  onDelete: 'CASCADE',
+});
+
+Applicant.belongsToMany(Platform, {
+  through: 'applicant_platform',
+  foreignKey: 'applicant_id',
+  onDelete: 'CASCADE',
 });
 
 Applicant.hasMany(ApplicantPlatform, {
   sourceKey: 'id',
   foreignKey: 'applicant_id',
-  as: 'applicantIdPlatform'
 });
 
 ApplicantPlatform.belongsTo(Applicant, {
   foreignKey: 'applicant_id',
-  as: 'applicantIdPlatform'
+  onDelete: 'CASCADE',
 });
 
 export default ApplicantPlatform;

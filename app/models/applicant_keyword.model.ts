@@ -1,4 +1,4 @@
-import { Association, DataTypes, Model } from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
 import sequelize from './index'
 import { Applicant } from './appicant.model'
 import { Keyword } from './keyword.model'
@@ -7,8 +7,6 @@ export interface IApplicantKeywordAttributes {
   id?: number;
   applicant_id: number;
   keyword_id: number;
-  applicantIdKeyword?: any;
-  keywordIdApplicant?: any;
 }
 
 export class ApplicantKeyword extends Model<IApplicantKeywordAttributes>
@@ -17,11 +15,6 @@ export class ApplicantKeyword extends Model<IApplicantKeywordAttributes>
   public name!: string;
   public applicant_id!: number;
   public keyword_id!: number;
-  
-  public static associations: {
-    applicantIdKeyword: Association<Applicant, ApplicantKeyword>
-    keywordIdApplicant: Association<Keyword, ApplicantKeyword>
-  };
 }
 
 ApplicantKeyword.init(
@@ -44,29 +37,40 @@ ApplicantKeyword.init(
     modelName: 'applicant_keyword',
     sequelize,
     timestamps: false,
+    freezeTableName: true
   }
 )
+
+Keyword.belongsToMany(Applicant, {
+  through: 'applicant_keyword',
+  foreignKey: 'keyword_id',
+  onDelete: 'CASCADE',
+});
 
 Keyword.hasMany(ApplicantKeyword, {
   sourceKey: 'id',
   foreignKey: 'keyword_id',
-  as: 'keywordIdApplicant'
 });
 
 ApplicantKeyword.belongsTo(Keyword, {
   foreignKey: 'keyword_id',
-  as: 'keywordIdApplicant'
+  onDelete: 'CASCADE',
+});
+
+Applicant.belongsToMany(Keyword, {
+  through: 'applicant_keyword',
+  foreignKey: 'applicant_id',
+  onDelete: 'CASCADE',
 });
 
 Applicant.hasMany(ApplicantKeyword, {
   sourceKey: 'id',
   foreignKey: 'applicant_id',
-  as: 'applicantIdKeyword'
 });
 
 ApplicantKeyword.belongsTo(Applicant, {
   foreignKey: 'applicant_id',
-  as: 'applicantIdKeyword'
+  onDelete: 'CASCADE',
 });
 
 export default ApplicantKeyword;
