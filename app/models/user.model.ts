@@ -1,24 +1,19 @@
-import { Model, DataTypes, Optional } from "sequelize";
+import { Model, DataTypes } from "sequelize";
 import sequelize from "../models";
 
 export interface IUserAttributes {
-  id: number;
+  id?: number;
   email: string;
   password: string;
   name: string;
 }
 
-export interface UserCreationAttributes extends Optional<IUserAttributes, "id"> {}
-
-class User extends Model<IUserAttributes, UserCreationAttributes>
+export class User extends Model<IUserAttributes>
   implements IUserAttributes {
   public id!: number;
   public email!: string;
   public password!: string;
   public name!: string;
-
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
 };
 User.init({
   id: {
@@ -41,8 +36,9 @@ User.init({
     allowNull: false,
   }
 }, {
+    timestamps: false,
     sequelize,
-    modelName: "users"
+    modelName: "user",
 })
 
 export default User;

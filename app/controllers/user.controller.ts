@@ -1,11 +1,11 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import config from "../config/config";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../models/user.model";
 import { IUserAttributes } from "../models/user.model";
 
-const signup = async (req: Request, res: Response, next: NextFunction) => {
+const signup = async (req: Request, res: Response) => {
   const { email, password, name } : IUserAttributes = req.body;
 
   User.findOne({
@@ -34,12 +34,13 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-const signin = async (req: Request, res: Response, next: NextFunction) => {
+const signin = async (req: Request, res: Response) => {
+  console.log(req.body)
   const { email, password } : IUserAttributes = req.body;
   
   User.findOne({
     where: {
-      email: email || null
+      email: email
     }
   })
     .then(user => {
