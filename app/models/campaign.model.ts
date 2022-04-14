@@ -1,4 +1,4 @@
-import { Model, DataTypes, Optional } from "sequelize";
+import { Model, DataTypes } from "sequelize";
 import sequelize from "../models";
 
 export enum STATUS_NAME {
@@ -7,7 +7,7 @@ export enum STATUS_NAME {
 }
 
 export interface ICampaignAttributes {
-    id: number;
+    id?: number;
     title: string;
     status: STATUS_NAME;
     evaluation_start_date: Date;
@@ -16,21 +16,19 @@ export interface ICampaignAttributes {
     thumbnail_url: string;
 }
 
-export interface CampaignCreationAttributes extends Optional<ICampaignAttributes, "id"> {}
-
-class Campaign extends Model<ICampaignAttributes, CampaignCreationAttributes>
+export class Campaign extends Model<ICampaignAttributes>
     implements ICampaignAttributes {
-        public id!: number;
-        public title!: string;
-        public status: STATUS_NAME;
-        public evaluation_start_date: Date;
-        public evaluation_end_date: Date;
-        public description: string;
-        public thumbnail_url: string;
+    public id!: number;
+    public title!: string;
+    public status!: STATUS_NAME;
+    public evaluation_start_date!: Date;
+    public evaluation_end_date!: Date;
+    public description!: string;
+    public thumbnail_url!: string;
 
-        public readonly createdAt!: Date;
-        public readonly updatedAt!: Date;
-    };
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+};
 Campaign.init({
     id: {
         type: DataTypes.INTEGER,
@@ -64,7 +62,8 @@ Campaign.init({
     }
 }, {
     sequelize,
-    modelName: "campaigns"
+    modelName: "campaign",
+    timestamps: true
 })
 
 export default Campaign;
