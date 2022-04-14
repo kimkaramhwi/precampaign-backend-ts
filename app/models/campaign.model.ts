@@ -8,7 +8,7 @@ export enum STATUS_NAME {
 
 export interface ICampaignAttributes {
     id: number;
-    name: string;
+    title: string;
     status: STATUS_NAME;
     evaluation_start_date: Date;
     evaluation_end_date: Date;
@@ -21,7 +21,7 @@ export interface CampaignCreationAttributes extends Optional<ICampaignAttributes
 export class Campaign extends Model<ICampaignAttributes, CampaignCreationAttributes>
     implements ICampaignAttributes {
         public id!: number;
-        public name!: string;
+        public title!: string;
         public status: STATUS_NAME;
         public evaluation_start_date: Date;
         public evaluation_end_date: Date;
@@ -38,7 +38,7 @@ Campaign.init({
         autoIncrement: true,
         primaryKey: true,
     },
-    name: {
+    title: {
         type: DataTypes.STRING(50),
         allowNull: false,
     },
