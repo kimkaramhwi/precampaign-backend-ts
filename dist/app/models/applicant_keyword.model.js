@@ -1,6 +1,6 @@
 // module.exports = (sequelize, Sequelize) => {
-//   const ApplicantPlatform = sequelize.define(
-//     'applicant_platform',
+//   const ApplicantKeyword = sequelize.define(
+//     'applicant_keyword',
 //     {
 //         id: {
 //             type: Sequelize.INTEGER,
@@ -16,19 +16,15 @@
 //                 key: 'id',
 //             }
 //         },
-//         platform_id: {
+//         keyword_id: {
 //             type: Sequelize.INTEGER,
 //             allowNull: false,
 //             references: {
-//                 model: 'platforms',
+//                 model: 'keywords',
 //                 key: 'id',
 //             }
 //         },
-//         account_name: {
-//             type: Sequelize.STRING(50),
-//             allowNull: false,
-//         }
-//     }, 
+//     },
 //     {
 //         timestamps: false,
 //         charset: 'utf8',
@@ -36,5 +32,6 @@
 //         freezeTableName: true
 //     }
 //   );
-//   return ApplicantPlatform;
+//   return ApplicantKeyword;
 // };
+//# sourceMappingURL=applicant_keyword.model.js.map

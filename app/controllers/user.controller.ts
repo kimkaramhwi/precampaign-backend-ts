@@ -10,7 +10,7 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
 
   User.findOne({
     where: {
-      email: email
+      email: email || null
     }
   }).then(user => {
     if (user) {
@@ -39,7 +39,7 @@ const signin = async (req: Request, res: Response, next: NextFunction) => {
   
   User.findOne({
     where: {
-      email: email
+      email: email || null
     }
   })
     .then(user => {

@@ -29,3 +29,4 @@
 //   );
 //   return ApplicantImage;
 // };
+//# sourceMappingURL=applicant_image.model.js.map

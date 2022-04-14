@@ -1,6 +1,6 @@
 // module.exports = (sequelize, Sequelize) => {
-//   const Rate = sequelize.define(
-//     'rate',
+//   const CampaignApplicant = sequelize.define(
+//     'campaign_applicant',
 //     {
 //         id: {
 //             type: Sequelize.INTEGER,
@@ -8,32 +8,24 @@
 //             autoIncrement: true,
 //             primaryKey: true,
 //         },
-//         campaign_applicant_id: {
+//         campaign_id: {
 //             type: Sequelize.INTEGER,
 //             allowNull: false,
 //             references: {
-//                 model: 'campaign_applicant',
+//                 model: 'campaigns',
 //                 key: 'id',
 //             }
 //         },
-//         user_id: {
+//         applicant_id: {
 //             type: Sequelize.INTEGER,
 //             allowNull: false,
 //             references: {
-//                 model: 'users',
+//                 model: 'applicants',
 //                 key: 'id',
 //             }
 //         },
-//         background_rate: {
-//             type: Sequelize.FLOAT,
-//             allowNull: false,
-//         },
-//         trend_rate: {
-//             type: Sequelize.FLOAT,
-//             allowNull: false,
-//         },
-//         creativity_rate: {
-//             type: Sequelize.FLOAT,
+//         is_selected: {
+//             type: Sequelize.BOOLEAN,
 //             allowNull: false,
 //         },
 //     }, 
@@ -41,7 +33,9 @@
 //         timestamps: false,
 //         charset: 'utf8',
 //         collate: 'utf8_general_ci',
+//         freezeTableName: true
 //     }
 //   );
-//   return Rate;
+//   return CampaignApplicant;
 // };
+//# sourceMappingURL=campaign_applicant.model.js.map
