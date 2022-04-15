@@ -4,7 +4,7 @@ import sequelize from "../models";
 import Campaign from "../models/campaign.model";
 import { ICampaignAttributes } from "../models/campaign.model";
 
-const create = async (req: Request, res: Response) => {
+const create = (req: Request, res: Response) => {
     const { title, status, evaluation_start_date, evaluation_end_date, description, thumbnail_url }: ICampaignAttributes = req.body;
     const campaign = {
         title: title,
@@ -26,7 +26,7 @@ const create = async (req: Request, res: Response) => {
         });
 };
 
-const findAll = async (req: Request, res: Response) => {
+const findAll = (req: Request, res: Response) => {
     const status = req.query.status;
     const limit: number = parseInt(req.query.limit as string) || 9;
     const offset: number = parseInt(req.query.offset as string) || 0;
@@ -70,7 +70,7 @@ const findAll = async (req: Request, res: Response) => {
     }
 };
 
-const findOne = async (req: Request, res: Response) => {
+const findOne = (req: Request, res: Response) => {
     const id = req.params.id;
 
     Campaign.findByPk(id)
