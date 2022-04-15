@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import User from "../models/user.model";
 import { IUserAttributes } from "../models/user.model";
 
-const signup = async (req: Request, res: Response) => {
+const signup = (req: Request, res: Response) => {
   try {
     const { email, password, name }: IUserAttributes = req.body;
 
@@ -22,7 +22,7 @@ const signup = async (req: Request, res: Response) => {
   }
 }
 
-const signin = async (req: Request, res: Response) => {
+const signin = (req: Request, res: Response) => {
   try {
     const user = req.user;
     const token = jwt.sign({ id: user.id }, config.auth.secret);
