@@ -1,4 +1,4 @@
-import { Association, DataTypes, Model } from 'sequelize'
+import { DataTypes, Model } from 'sequelize'
 import sequelize from './index'
 import { Applicant } from './appicant.model'
 import { Campaign } from './campaign.model'
@@ -8,8 +8,6 @@ interface ICampaignApplicantAttributes {
   applicant_id: number;
   campaign_id: number;
   is_selected: boolean;
-  applicantIdCampaign?: any;
-  campaignIdApplicant?: any;
 }
 
 export class CampaignApplicant extends Model<ICampaignApplicantAttributes>
@@ -18,11 +16,6 @@ export class CampaignApplicant extends Model<ICampaignApplicantAttributes>
   public applicant_id!: number;
   public campaign_id!: number;
   public is_selected!: boolean;
-  
-  public static associations: {
-    applicantIdCampaign: Association<Applicant, CampaignApplicant>
-    CampaignIdApplicant: Association<Campaign, CampaignApplicant>
-  };
 }
 
 CampaignApplicant.init(
@@ -53,26 +46,36 @@ CampaignApplicant.init(
   }
 )
 
+Campaign.belongsToMany(Applicant, {
+  through: 'campaign_applicant',
+  foreignKey: 'campaign_id',
+  onDelete: 'CASCADE',
+});
+
 Campaign.hasMany(CampaignApplicant, {
   sourceKey: 'id',
   foreignKey: 'campaign_id',
-  as: 'campaignIdApplicant'
 });
 
 CampaignApplicant.belongsTo(Campaign, {
   foreignKey: 'campaign_id',
-  as: 'campaignIdApplicant'
+  onDelete: 'CASCADE',
+});
+
+Applicant.belongsToMany(Campaign, {
+  through: 'campaign_applicant',
+  foreignKey: 'applicant_id',
+  onDelete: 'CASCADE',
 });
 
 Applicant.hasMany(CampaignApplicant, {
   sourceKey: 'id',
   foreignKey: 'applicant_id',
-  as: 'applicantIdCampaign'
 });
 
 CampaignApplicant.belongsTo(Applicant, {
   foreignKey: 'applicant_id',
-  as: 'applicantIdCampaign'
+  onDelete: 'CASCADE',
 });
 
 export default CampaignApplicant;
