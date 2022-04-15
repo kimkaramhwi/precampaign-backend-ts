@@ -49,7 +49,7 @@ Rate.init(
       allowNull: false,
       type: DataTypes.INTEGER,
     },
-    
+
   },
   {
     timestamps: false,
@@ -76,17 +76,17 @@ Rate.belongsTo(CampaignApplicant, {
 
 User.belongsToMany(CampaignApplicant, {
   through: 'rate',
-  foreignKey: 'applicant_id',
+  foreignKey: 'user_id',
   onDelete: 'CASCADE',
 });
 
 User.hasMany(Rate, {
   sourceKey: 'id',
-  foreignKey: 'applicant_id',
+  foreignKey: 'user_id',
 });
 
 Rate.belongsTo(User, {
-  foreignKey: 'applicant_id',
+  foreignKey: 'user_id',
   onDelete: 'CASCADE',
 });
 

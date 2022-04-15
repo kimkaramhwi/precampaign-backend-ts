@@ -5,16 +5,7 @@ import Campaign from "../models/campaign.model";
 import { ICampaignAttributes } from "../models/campaign.model";
 
 const create = async (req: Request, res: Response) => {
-    console.log(req.body)
     const { title, status, evaluation_start_date, evaluation_end_date, description, thumbnail_url }: ICampaignAttributes = req.body;
-
-    if (!req.body) {
-        res.status(400).send({
-            message: "Content can not be empty!"
-        });
-        return;
-    }
-
     const campaign = {
         title: title,
         status: status,
@@ -35,26 +26,23 @@ const create = async (req: Request, res: Response) => {
         });
 };
 
-interface Query {
-    status: string;
-    limit: any;
-    offset: any;
-    sort_by: string;
-    sort_order: string;
-}
-
 const findAll = async (req: Request, res: Response) => {
-    const { status, limit, offset, sort_by, sort_order } = req.query as unknown as Query;
-    var condition = status ? { status: { [Op.like]: `%${status}%` } } : null;
+    const status = req.query.status;
+    const limit: number = parseInt(req.query.limit as string) || 9;
+    const offset: number = parseInt(req.query.offset as string) || 0;
+    const sort_by = req.query.sort_by as string || "id";
+    const sort_order = req.query.sort_order as string || "ASC";
+    const condition = status ? { status: { [Op.like]: `%${status}%` } } : null;
 
     if (sort_by === "count") {
         Campaign.findAll({
-            limit: limit * 1 || 9,
-            offset: offset * 1 || 0,
-            attributes: [
-                'id', 'title', 'status', 'evaluation_start_date', 'evaluation_end_date', 'description', 'thumbnail_url', 'createdAt', 'updatedAt',
-                [sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'applicant_count']],
-            order: [[sequelize.literal('applicant_count'), sort_order || "DESC"]]
+            where: condition,
+            limit: limit,
+            offset: offset,
+            attributes: {
+                include: [[sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'applicant_count']]
+            },
+            order: [[sequelize.literal('applicant_count'), sort_order]]
         })
             .then(data => {
                 res.send(data);
@@ -67,9 +55,9 @@ const findAll = async (req: Request, res: Response) => {
     } else {
         Campaign.findAll({
             where: condition,
-            limit: limit * 1 || 9,
-            offset: offset * 1 || 0,
-            order: [[sort_by || "id", sort_order || "ASC"]]
+            limit: limit,
+            offset: offset,
+            order: [[sort_by, sort_order]]
         })
             .then(data => {
                 res.send(data);
