@@ -5,7 +5,6 @@ import Campaign from "../models/campaign.model";
 import { ICampaignAttributes } from "../models/campaign.model";
 
 const create = async (req: Request, res: Response) => {
-    console.log(req.body)
     const { title, status, evaluation_start_date, evaluation_end_date, description, thumbnail_url }: ICampaignAttributes = req.body;
 
     if (!req.body) {
@@ -35,25 +34,22 @@ const create = async (req: Request, res: Response) => {
         });
 };
 
-interface Query {
-    status: string;
-    limit: any;
-    offset: any;
-    sort_by: string;
-    sort_order: string;
-}
-
 const findAll = async (req: Request, res: Response) => {
-    const { status, limit, offset, sort_by, sort_order } = req.query as unknown as Query;
+    const status = req.query.status;
+    const limit: number = parseInt(req.query.limit as string);
+    const offset: number = parseInt(req.query.offset as string);
+    const sort_by = req.query.sort_by as string;
+    const sort_order = req.query.sort_order as string;
     var condition = status ? { status: { [Op.like]: `%${status}%` } } : null;
 
     if (sort_by === "count") {
         Campaign.findAll({
-            limit: limit * 1 || 9,
+            where: condition,
+            limit: limit || 9,
             offset: offset * 1 || 0,
-            attributes: [
-                'id', 'title', 'status', 'evaluation_start_date', 'evaluation_end_date', 'description', 'thumbnail_url', 'createdAt', 'updatedAt',
-                [sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'applicant_count']],
+            attributes: {
+                include: [[sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'applicant_count']]
+            },
             order: [[sequelize.literal('applicant_count'), sort_order || "DESC"]]
         })
             .then(data => {

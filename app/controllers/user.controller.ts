@@ -8,31 +8,18 @@ import { IUserAttributes } from "../models/user.model";
 const signup = async (req: Request, res: Response) => {
   const { email, password, name }: IUserAttributes = req.body;
 
-  User.findOne({
-    where: {
-      email: email || null
-    }
-  }).then(user => {
-    if (user) {
-      res.status(400).send({
-        message: "Email already exists!"
-      });
-      return;
-    } else {
-      User.create({
-        name: name,
-        email: email,
-        password: bcrypt.hashSync(password, 8)
-      })
-        .then(() => {
-          res.send({ message: "User was registered successfully!" });
-        })
-        .catch(err => {
-          res.status(500).send({ message: err.message });
-        });
-    }
-  });
-};
+  User.create({
+    name: name,
+    email: email,
+    password: bcrypt.hashSync(password, 8)
+  })
+    .then(() => {
+      res.send({ message: "User was registered successfully!" });
+    })
+    .catch(err => {
+      res.status(500).send({ message: err.message });
+    });
+}
 
 const signin = async (req: Request, res: Response) => {
   const { email, password }: IUserAttributes = req.body;
