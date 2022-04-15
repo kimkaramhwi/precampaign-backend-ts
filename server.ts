@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json({ type: "*/*" }));
 app.use(routes);
 
-//sequelize.sync(); 
+sequelize.sync(); 
 
 app.get("/", (req, res) => {
   res.json({ message: "Welcome Precampaign!" });

@@ -7,6 +7,6 @@ const router = express.Router();
 router.use(verifyToken);
 router.post("", campaigncontroller.create);
 router.get("", campaigncontroller.findAll);
-router.get("/:id", campaigncontroller.findOne);
+router.get("/:id", campaigncontroller.campaignApplicantfindAll);
 
 export default router;

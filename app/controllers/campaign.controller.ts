@@ -2,7 +2,12 @@ import { Request, Response } from "express";
 import { Op } from "sequelize";
 import sequelize from "../models";
 import Campaign from "../models/campaign.model";
+import Applicant from "../models/appicant.model";
+import CampaignApplicant from "../models/campaign_applicant.model";
+import Rate from "../models/rate.model";
+import User from "../models/user.model";
 import { ICampaignAttributes } from "../models/campaign.model";
+import Platform from "../models/platform.model";
 
 const create = (req: Request, res: Response) => {
     const { title, status, evaluation_start_date, evaluation_end_date, description, thumbnail_url }: ICampaignAttributes = req.body;
@@ -65,18 +70,64 @@ const findAll = (req: Request, res: Response) => {
     }
 };
 
-const findOne = (req: Request, res: Response) => {
-    const id = req.params.id;
+const campaignApplicantfindAll = async (req: Request, res: Response) => {
+    const campaignId = parseInt(req.params.id);
+    const limit = req.query.limit || 9;
+    const offset = req.query.offset || 0;
+    
+    // Campaign.findAll({
+    //     where: {
+    //         id : campaignId
+    //     },
+    //     attributes: {
+    //         exclude: ["createdAt", "updatedAt"]
+    //     },
+    //     include: [{ 
+    //         model: Applicant,
+    //         attributes: {
+    //             exclude: ["createdAt", "updatedAt"]   
+    //         },
+            // include: [{
+            //     model: CampaignApplicant,
+            //     where: {
+            //         campaign_id : campaignId
+            //     },
+            //     attributes: [
+            //         "id", "is_selected"
+            //     ],
+            //     // include: [{
+            //     //     model: Rate,
+            //     //     attributes: {
+            //     //         include: [
+            //     //         [sequelize.literal('(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates)'), 'avg_rates']
+            //     //         // [sequelize.literal('(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates WHERE rate.campaign_applicant_id = CampaignApplicant.id)'), 'avg_rates']
+            //     //         // [sequelize.fn("AVG", sequelize.col("background_rate"), sequelize.col("trend_rate"), sequelize.col("creativity_rate")), "avg_rates"]
+            //     //         ]
+            //     //     },
+            //     // }]
+            // }]
+    //     }]
+    // })
+    User.findAll({
+        include: CampaignApplicant,
 
-    Campaign.findByPk(id)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
+    })
+    .then(data => {
+      if (data.length === 0) {
+        return res.status(404).send({
+          message: `Not Found Campaign with id ${campaignId}`
         });
-};
-
-export default {
-    create, findAll, findOne
-}
+      }
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+          message: err.message
+        });
+      })
+    };
+  
+  export default {
+      create, findAll, campaignApplicantfindAll
+  }
+  
