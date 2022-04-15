@@ -1,11 +1,7 @@
 import { Request, Response } from "express";
 
-const Authorizeduser = async (req: Request, res: Response) => {
-    try {
-        res.status(200).send("Authorized.");
-    } catch (err) {
-        res.status(500).send({ message: err.message });
-    }
+const Authorizeduser = (req: Request, res: Response) => {
+    res.status(200).send("Authorized.");
 };
 
 export default {
