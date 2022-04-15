@@ -6,31 +6,36 @@ import User from "../models/user.model";
 import { IUserAttributes } from "../models/user.model";
 
 const signup = async (req: Request, res: Response) => {
-  const { email, password, name }: IUserAttributes = req.body;
+  try {
+    const { email, password, name }: IUserAttributes = req.body;
 
-  User.create({
-    name: name,
-    email: email,
-    password: bcrypt.hashSync(password, 8)
-  })
-    .then(() => {
-      res.send({ message: "User was registered successfully!" });
+    User.create({
+      name: name,
+      email: email,
+      password: bcrypt.hashSync(password, 8)
     })
-    .catch(err => {
-      res.status(500).send({ message: err.message });
-    });
+      .then(() => {
+        res.send({ message: "User was registered successfully!" });
+      })
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
 }
 
 const signin = async (req: Request, res: Response) => {
-  const user = req.user;
-  const token = jwt.sign({ id: user.id }, config.auth.secret);
+  try {
+    const user = req.user;
+    const token = jwt.sign({ id: user.id }, config.auth.secret);
 
-  res.status(200).send({
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    accessToken: token
-  })
+    res.status(200).send({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      accessToken: token
+    })
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
 };
 
 export default {
