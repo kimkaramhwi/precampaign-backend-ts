@@ -22,39 +22,15 @@ const signup = async (req: Request, res: Response) => {
 }
 
 const signin = async (req: Request, res: Response) => {
-  const { email, password }: IUserAttributes = req.body;
+  const user = req.user;
+  const token = jwt.sign({ id: user.id }, config.auth.secret);
 
-  User.findOne({
-    where: {
-      email: email
-    }
+  res.status(200).send({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    accessToken: token
   })
-    .then(user => {
-      if (!user) {
-        return res.status(404).send({ message: "User Not found." });
-      }
-
-      const passwordIsValid = bcrypt.compareSync(password, user.password);
-
-      if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: "Invalid Password!"
-        });
-      }
-
-      const token = jwt.sign({ id: user.id }, config.auth.secret);
-
-      res.status(200).send({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        accessToken: token
-      });
-    })
-    .catch(err => {
-      res.status(500).send({ message: err.message });
-    });
 };
 
 export default {
