@@ -29,6 +29,7 @@ export class Campaign extends Model<ICampaignAttributes>
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 };
+
 Campaign.init({
     id: {
         type: DataTypes.INTEGER,

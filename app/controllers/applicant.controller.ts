@@ -13,7 +13,8 @@ const selectedApplicantFindAll = (req: Request, res: Response) => {
       model: CampaignApplicant,
       where: {
         is_selected: true
-      }
+      },
+
     }
   })
   .then(data => {
