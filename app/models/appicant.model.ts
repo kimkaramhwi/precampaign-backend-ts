@@ -2,8 +2,8 @@ import { Model, DataTypes } from "sequelize"
 import sequelize from "../models";
 
 enum Gender {
-  Male = "Male",
-  Female = "Female",
+  M = "M",
+  F = "F",
   Etc = "Etc",
 }
 
@@ -52,7 +52,7 @@ Applicant.init(
     },
     gender: {
       allowNull: false,
-      type: DataTypes.ENUM(Gender.Male, Gender.Female, Gender.Etc),
+      type: DataTypes.ENUM(Gender.M, Gender.F, Gender.Etc),
     },
     height: {
       allowNull: false,
