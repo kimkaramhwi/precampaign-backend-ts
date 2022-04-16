@@ -5,7 +5,9 @@ import Campaign from "../models/campaign.model";
 import Applicant from "../models/appicant.model";
 import CampaignApplicant from "../models/campaign_applicant.model";
 import Rate from "../models/rate.model";
-import User from "../models/user.model";
+import ApplicantKeyword from "../models/applicant_keyword.model";
+import ApplicantPlatform from "../models/applicant_platform.model";
+import Keyword from "../models/keyword.model";
 import { ICampaignAttributes } from "../models/campaign.model";
 import Platform from "../models/platform.model";
 
@@ -71,63 +73,75 @@ const findAll = (req: Request, res: Response) => {
 };
 
 const campaignApplicantfindAll = async (req: Request, res: Response) => {
-    const campaignId = parseInt(req.params.id);
-    const limit = req.query.limit || 9;
-    const offset = req.query.offset || 0;
-    
-    // Campaign.findAll({
-    //     where: {
-    //         id : campaignId
-    //     },
-    //     attributes: {
-    //         exclude: ["createdAt", "updatedAt"]
-    //     },
-    //     include: [{ 
-    //         model: Applicant,
-    //         attributes: {
-    //             exclude: ["createdAt", "updatedAt"]   
-    //         },
-            // include: [{
-            //     model: CampaignApplicant,
-            //     where: {
-            //         campaign_id : campaignId
-            //     },
-            //     attributes: [
-            //         "id", "is_selected"
-            //     ],
-            //     // include: [{
-            //     //     model: Rate,
-            //     //     attributes: {
-            //     //         include: [
-            //     //         [sequelize.literal('(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates)'), 'avg_rates']
-            //     //         // [sequelize.literal('(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates WHERE rate.campaign_applicant_id = CampaignApplicant.id)'), 'avg_rates']
-            //     //         // [sequelize.fn("AVG", sequelize.col("background_rate"), sequelize.col("trend_rate"), sequelize.col("creativity_rate")), "avg_rates"]
-            //     //         ]
-            //     //     },
-            //     // }]
-            // }]
-    //     }]
-    // })
-    User.findAll({
-        include: CampaignApplicant,
+    const id = req.params.id;
 
+    Applicant.findAll({
+        include: [
+            {
+                model: CampaignApplicant,
+                as: "applicant_campaigns",
+                attributes: ["id"],
+                include : [{
+                    model: Rate,
+                    as: "applicant_rate"
+                }],
+            },
+            {
+                model: Campaign,
+                as: "campaigns",
+                where: {id : id},
+                attributes: []
+            },
+            {
+                model: ApplicantPlatform,
+                as: "applicant_platforms",
+                attributes: ["account_name"]
+            },
+            {
+                model: Platform,
+                as: "platforms",
+                attributes: ["name"]
+            },
+            {
+                model: ApplicantKeyword,
+                as: "applicant_keywords",
+                attributes: []
+            },
+            {
+                model: Keyword,
+                as: "keywords",
+                attributes: ["name"]
+            }
+        ]
     })
-    .then(data => {
-      if (data.length === 0) {
-        return res.status(404).send({
-          message: `Not Found Campaign with id ${campaignId}`
-        });
-      }
-      res.send(data);
+    .then(applicants => {
+        let data = []
+        for (const i in applicants) {
+            data.push({
+                "id": applicants[i].id,
+                "name": applicants[i].name,
+                "gender": applicants[i].gender,
+                "height": applicants[i].height,
+                "weight": applicants[i].weight,
+                "thumbnail_url": applicants[i].thumbnail_url,
+                "contact": applicants[i].contact,
+                "address": applicants[i].address,
+                "platform": applicants[i].platforms[0].name,
+                "platform_account": applicants[i].applicant_platforms[0].account_name,
+                "keyword": applicants[i].keywords[0].name
+            })
+        }
+        // const global 
+        res.status(200).send({"applicants" : data});
     })
     .catch(err => {
-      res.status(500).send({
-          message: err.message
+        res.status(500).send({
+            message: err.message
         });
-      })
-    };
-  
-  export default {
-      create, findAll, campaignApplicantfindAll
-  }
+    });
+};
+
+export default {
+    create, findAll, campaignApplicantfindAll
+}
   
