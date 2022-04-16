@@ -16,7 +16,15 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome Precampaign!" });
 });
 
-const PORT = config.PORT;
-app.listen(PORT, () => {
+const PORT:number = parseInt(config.PORT as string);
+app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
+
+  await sequelize.authenticate()
+  .then(async () => {
+      console.log("connection success");
+  })
+  .catch((e) => {
+      console.log('TT : ', e);
+  })
 });

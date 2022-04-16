@@ -1,10 +1,4 @@
 import { Association, DataTypes, Model } from 'sequelize'
-  // HasManyAddAssociationMixin,
-  // HasManyGetAssociationsMixin,
-  // HasManyHasAssociationMixin,
-  // HasManyCountAssociationsMixin,
-  // HasManyCreateAssociationMixin,
-  // Optional
 import sequelize from './index'
 import { Applicant } from './appicant.model'
 import { Campaign } from './campaign.model'
@@ -21,8 +15,6 @@ interface ICampaignApplicantAttributes {
   campaign_applicants?: string[];
 }
 
-// interface CampaignApplicantCreationAttributes extends Optional<ICampaignApplicantAttributes, 'id'> {};
-
 export class CampaignApplicant extends Model<ICampaignApplicantAttributes>
 
   implements ICampaignApplicantAttributes {
@@ -31,18 +23,6 @@ export class CampaignApplicant extends Model<ICampaignApplicantAttributes>
   public campaign_id!: number;
   public is_selected!: boolean;
   
-  // public getApplicants!: HasManyGetAssociationsMixin<Applicant>; // null assertion에주의하십시오!
-  // public addApplicant!: HasManyAddAssociationMixin<Applicant, number>;
-  // public hasApplicant!: HasManyHasAssociationMixin<Applicant, number>;
-  // public countApplicants!: HasManyCountAssociationsMixin;
-  // public createApplicant!: HasManyCreateAssociationMixin<Applicant>;
-
-  // public getCampaigns!: HasManyGetAssociationsMixin<Campaign>; // null assertion에주의하십시오!
-  // public addCampaign!: HasManyAddAssociationMixin<Campaign, number>;
-  // public hasCampaign!: HasManyHasAssociationMixin<Campaign, number>;
-  // public countCampaigns!: HasManyCountAssociationsMixin;
-  // public createCampaign!: HasManyCreateAssociationMixin<Campaign>;
-
   public static associations: {
     applicant_campaigns: Association<Applicant, CampaignApplicant>
     campaign_applicants: Association<Campaign, CampaignApplicant>
@@ -50,7 +30,6 @@ export class CampaignApplicant extends Model<ICampaignApplicantAttributes>
     campaigns: Association<Campaign, Applicant>
   };
 }
-
 
 CampaignApplicant.init(
   {

@@ -123,15 +123,15 @@ const campaignApplicantfindAll = async (req: Request, res: Response) => {
                 "gender": applicants[i].gender,
                 "height": applicants[i].height,
                 "weight": applicants[i].weight,
-                "thumbnail_url": applicants[i].thumbnail_url,
+                "thumbnail": applicants[i].thumbnail_url,
                 "contact": applicants[i].contact,
                 "address": applicants[i].address,
                 "platform": applicants[i].platforms[0].name,
                 "platform_account": applicants[i].applicant_platforms[0].account_name,
-                "keyword": applicants[i].keywords[0].name
+                "keyword": applicants[i].keywords[0].name,
+                "rate": 0
             })
         }
-        // const global 
         res.status(200).send({"applicants" : data});
     })
     .catch(err => {

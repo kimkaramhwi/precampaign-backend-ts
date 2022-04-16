@@ -21,6 +21,7 @@ export interface IApplicantAttributes {
 
 export class Applicant extends Model<IApplicantAttributes>
   implements IApplicantAttributes {
+  [x: string]: any;
   public id!: number;
   public name!: string;
   public gender!: Gender;
@@ -33,10 +34,6 @@ export class Applicant extends Model<IApplicantAttributes>
 
   public readonly createAt!: Date;
   public readonly updateAt!: Date;
-  public platforms: any;
-  public applicant_platforms: any;
-  public keywords: any;
-
 }
 
 Applicant.init(

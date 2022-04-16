@@ -89,7 +89,7 @@ ApplicantPlatform.belongsTo(Applicant, {
 Platform.belongsToMany(Applicant, {
   through: 'applicant_platform',
   foreignKey: 'platform_id',
-  as: 'applicantss'
+  as: 'applicants'
 });
 
 Platform.hasMany(ApplicantPlatform, {

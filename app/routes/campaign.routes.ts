@@ -4,7 +4,7 @@ import campaigncontroller from "../controllers/campaign.controller";
 
 const router = express.Router();
 
-router.use(verifyToken);
+// router.use(verifyToken);
 router.post("", campaigncontroller.create);
 router.get("", campaigncontroller.findAll);
 router.get("/:id", campaigncontroller.campaignApplicantfindAll);
