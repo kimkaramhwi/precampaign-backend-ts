@@ -1,8 +1,16 @@
 import { Request, Response } from "express";
 import { Op } from "sequelize";
 import sequelize from "../models";
+import Applicant from "../models/appicant.model";
 import Campaign from "../models/campaign.model";
+import CampaignApplicant from "../models/campaign_applicant.model";
 import { ICampaignAttributes } from "../models/campaign.model";
+import Platform from "../models/platform.model";
+import ApplicantPlatform from "../models/applicant_platform.model";
+import ApplicantImage from "../models/applicant_image.model";
+import Keyword from "../models/keyword.model";
+import ApplicantKeyword from "../models/applicant_keyword.model";
+import Rate from "../models/rate.model";
 
 const create = async (req: Request, res: Response) => {
     console.log(req.body)
@@ -85,9 +93,64 @@ const findAll = async (req: Request, res: Response) => {
 const findOne = async (req: Request, res: Response) => {
     const id = req.params.id;
 
-    Campaign.findByPk(id)
-        .then(data => {
-            res.send(data);
+    Applicant.findAll({
+        include: [
+            {
+                model: CampaignApplicant,
+                as: "applicant_campaigns",
+                attributes: ["id"],
+                include : [{
+                    model: Rate,
+                    as: "applicant_rate"
+                }],
+            },
+            {
+                model: Campaign,
+                as: "campaigns",
+                where: {id : id},
+                attributes: []
+            },
+            {
+                model: ApplicantPlatform,
+                as: "applicant_platforms",
+                attributes: ["account_name"]
+            },
+            {
+                model: Platform,
+                as: "platforms",
+                attributes: ["name"]
+            },
+            {
+                model: ApplicantKeyword,
+                as: "applicant_keywords",
+                attributes: []
+            },
+            {
+                model: Keyword,
+                as: "keywords",
+                attributes: ["name"]
+            }
+        ]
+    })
+        .then(applicants => {
+            let data = []
+            for (const i in applicants) {
+                data.push({
+                    "id": applicants[i].id,
+                    "name": applicants[i].name,
+                    "gender": applicants[i].gender,
+                    "height": applicants[i].height,
+                    "weight": applicants[i].weight,
+                    "thumbnail_url": applicants[i].thumbnail_url,
+                    "contact": applicants[i].contact,
+                    "address": applicants[i].address,
+                    "platform": applicants[i].platforms[0].name,
+                    "platform_account": applicants[i].applicant_platforms[0].account_name,
+                    "keyword": applicants[i].keywords[0].name
+                })
+            }
+            // console.log("platform_account :"  + applicants[0].platforms.name)
+            res.send({"applicants" : applicants});
         })
         .catch(err => {
             res.status(500).send({

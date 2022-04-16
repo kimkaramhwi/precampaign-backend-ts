@@ -33,6 +33,9 @@ export class Applicant extends Model<IApplicantAttributes>
 
   public readonly createAt!: Date;
   public readonly updateAt!: Date;
+  public platforms: any;
+  public applicant_platforms: any;
+  public keywords: any;
 
 }
 

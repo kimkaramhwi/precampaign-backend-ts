@@ -1,4 +1,4 @@
-import { DataTypes, Model } from 'sequelize'
+import { Association, DataTypes, Model } from 'sequelize'
 import sequelize from './index'
 import { CampaignApplicant } from './campaign_applicant.model'
 import { User } from './user.model'
@@ -10,6 +10,11 @@ interface IRateAttributes {
   background_rate: number;
   trend_rate: number;
   creativity_rate: number;
+
+  user_rate?: string[];
+  applicant_rate?: string[];
+  users?: string[];
+  campaignApplicants?: string[];
 }
 
 export class Rate extends Model<IRateAttributes>
@@ -20,6 +25,13 @@ export class Rate extends Model<IRateAttributes>
   public background_rate!: number;
   public trend_rate!: number;
   public creativity_rate!: number;
+
+  public static associations: {
+    user_rate: Association<User, Rate>
+    applicant_rate: Association<CampaignApplicant, Rate>
+    users: Association<User, CampaignApplicant>
+    campaignApplicants: Association<CampaignApplicant, User>
+  };
 }
 
 Rate.init(
@@ -32,10 +44,18 @@ Rate.init(
     campaign_applicant_id: {
       allowNull: false,
       type: DataTypes.INTEGER,
+      references: {
+        model: CampaignApplicant,
+        key: "id"
+      }
     },
     user_id: {
       allowNull: false,
       type: DataTypes.INTEGER,
+      references: {
+        model: User,
+        key: "id"
+      }
     },
     background_rate: {
       allowNull: false,
@@ -61,32 +81,38 @@ Rate.init(
 CampaignApplicant.belongsToMany(User, {
   through: 'rate',
   foreignKey: 'campaign_applicant_id',
-  onDelete: 'CASCADE',
+  as: "users"
 });
 
 CampaignApplicant.hasMany(Rate, {
   sourceKey: 'id',
   foreignKey: 'campaign_applicant_id',
+  as: "applicant_rate"
 });
 
 Rate.belongsTo(CampaignApplicant, {
   foreignKey: 'campaign_applicant_id',
+  targetKey: 'id',
+  as: "applicant_rate",
   onDelete: 'CASCADE',
 });
 
 User.belongsToMany(CampaignApplicant, {
   through: 'rate',
-  foreignKey: 'applicant_id',
-  onDelete: 'CASCADE',
+  foreignKey: 'user_id',
+  as: "campaignApplicants"
 });
 
 User.hasMany(Rate, {
   sourceKey: 'id',
-  foreignKey: 'applicant_id',
+  foreignKey: 'user_id',
+  as: "user_rate",
 });
 
 Rate.belongsTo(User, {
-  foreignKey: 'applicant_id',
+  foreignKey: 'user_id',
+  targetKey: 'id',
+  as: "user_rate",
   onDelete: 'CASCADE',
 });
 
