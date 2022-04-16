@@ -77,6 +77,19 @@ const findOne = (req: Request, res: Response) => {
         });
 };
 
+const updateStatus = (req: Request, res: Response) => {
+    const id = req.params.id;
+    const status = req.body.status;
+
+    Campaign.update({ status: status }, { where: { id: id } })
+        .then(data => {
+            res.status(200).send({ message: "Success!" });
+        })
+        .catch(err => {
+            res.status(500).send({ message: err.message });
+        })
+}
+
 export default {
-    create, findAll, findOne
+    create, findAll, findOne, updateStatus
 }
