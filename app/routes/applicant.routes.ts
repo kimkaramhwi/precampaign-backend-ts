@@ -4,8 +4,8 @@ import applicantcontroller from "../controllers/applicant.controller"
 
 const router = express.Router();
 
-router.use(verifyToken);
+// router.use(verifyToken);
 router.get("", applicantcontroller.selectedApplicantFindAll);
-router.post("/:id", applicantcontroller.rateCreateOrUpdate);
+router.post("", applicantcontroller.rateCreateOrUpdate);
 
 export default router;

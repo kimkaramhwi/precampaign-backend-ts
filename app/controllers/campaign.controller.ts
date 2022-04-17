@@ -10,6 +10,7 @@ import ApplicantPlatform from "../models/applicant_platform.model";
 import Keyword from "../models/keyword.model";
 import { ICampaignAttributes } from "../models/campaign.model";
 import Platform from "../models/platform.model";
+import User from "../models/user.model";
 
 const create = (req: Request, res: Response) => {
     const { title, status, evaluation_start_date, evaluation_end_date, description, thumbnail_url }: ICampaignAttributes = req.body;
@@ -74,7 +75,7 @@ const findAll = (req: Request, res: Response) => {
 
 const campaignApplicantfindAll = (req: Request, res: Response) => {
     const id = req.params.id;
-    
+
     Applicant.findAll({
         include: [
             {
@@ -87,12 +88,12 @@ const campaignApplicantfindAll = (req: Request, res: Response) => {
                 include : [{
                     model: Rate,
                     as: "applicant_rate",
-                    attributes: [
-                        [sequelize.literal(`(SELECT id FROM campaign_applicant WHERE campaign_id = ${id} and applicant_id = Applicant.id )`), 'campaignapplicant_id']
-                        [sequelize.literal(`(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates WHERE campaign_applicant_id = campaignapplicant_id)`), 'avg_rates']
+                //     attributes: [
+                        // [sequelize.literal(`(SELECT id FROM campaign_applicant WHERE campaign_id = ${id} and applicant_id = Applicant.id )`), 'campaignapplicant_id']
+                        // [sequelize.literal(`(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates WHERE campaign_applicant_id = campaignapplicant_id)`), 'avg_rates']
                         // [sequelize.literal(`(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates WHERE IN (SELECT id FROM campaign_applicant WHERE campaign_id = ${id} and applicant_id = Applicant.id ))`), 'avg_rates']
-                    ]
-                    // include: [[sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'applicant_count']]
+                    // ]
+
                 }],
             },
             {
@@ -124,34 +125,31 @@ const campaignApplicantfindAll = (req: Request, res: Response) => {
         ]
     })
     .then(applicants => {
-        // let data = []
-        // for (const i in applicants) {
-        //     const keywords = []
+        let data = []
+        for (const i in applicants) {
+            const keywords = []
 
-        //     for (const j in applicants[i].keywords) {
-        //         keywords.push(applicants[i].keywords[j].name)
-        //     }
+            for (const j in applicants[i].keywords) {
+                keywords.push(applicants[i].keywords[j].name)
+            }
 
-        //     data.push({
-        //         "id": applicants[i].id,
-        //         "name": applicants[i].name,
-        //         "gender": applicants[i].gender,
-        //         "height": applicants[i].height,
-        //         "weight": applicants[i].weight,
-        //         "thumbnail": applicants[i].thumbnail_url,
-        //         "contact": applicants[i].contact,
-        //         "address": applicants[i].address,
-        //         // "platform": platform,
-        //         // "platform_account": platform_account,
-        //         "campaign_applicant_id" : applicants[i].applicant_campaigns[0].id,
-        //         "keyword": keywords,
-        //         "rate" : applicants[i].applicant_campaigns[0].applicant_rate,
-        //     })
-        // }
-        // res.status(200).send(data);
-        res.status(200).send(applicants);
-
-
+            data.push({
+                "id": applicants[i].id,
+                "name": applicants[i].name,
+                "gender": applicants[i].gender,
+                "height": applicants[i].height,
+                "weight": applicants[i].weight,
+                "thumbnail": applicants[i].thumbnail_url,
+                "contact": applicants[i].contact,
+                "address": applicants[i].address,
+                // "platform": platform,
+                // "platform_account": platform_account,
+                "campaign_applicant_id" : applicants[i].applicant_campaigns[0].id,
+                "keyword": keywords,
+                "rate" : applicants[i].applicant_campaigns[0].applicant_rate,
+            })
+        }
+        res.status(200).send(data);
     })
     .catch(err => {
         res.status(500).send({
@@ -159,99 +157,63 @@ const campaignApplicantfindAll = (req: Request, res: Response) => {
         });
     });
 };
-// const campaignApplicantfindAll = (req: Request, res: Response) => {
-//     const id = req.params.id;
 
-//     Applicant.findAll({
-//         include: [
-//             {
-//                 model: CampaignApplicant,
-//                 as: "applicant_campaigns",
-//                 attributes: ["id"],
-//                 where: {
-//                     campaign_id : id
-//                 },
-//                 include : [{
-//                     model: Rate,
-//                     as: "applicant_rate",
-//                     attributes: [
-//                         // [sequelize.literal(`(SELECT id FROM campaign_applicant WHERE campaign_id = ${id} and applicant_id = Applicant.id )`), 'campaignapplicant_id']
-//                         // [sequelize.literal(`(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates WHERE campaign_applicant_id = CampaignApplicant_id)`), 'avg_rates']
-//                         [sequelize.literal(`(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates WHERE IN (SELECT id FROM campaign_applicant WHERE campaign_id = ${id} and applicant_id = Applicant.id ))`), 'avg_rates']
-//                     ]
-//                     // include: [[sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'applicant_count']]
-//                 }],
-//             },
-//             {
-//                 model: Campaign,
-//                 as: "campaigns",
-//                 where: {id : id},
-//                 attributes: []
-//             },
-//             {
-//                 model: ApplicantPlatform,
-//                 as: "applicant_platforms",
-//                 attributes: ["account_name"]
-//             },
-//             {
-//                 model: Platform,
-//                 as: "platforms",
-//                 attributes: ["name"]
-//             },
-//             {
-//                 model: ApplicantKeyword,
-//                 as: "applicant_keywords",
-//                 attributes: []
-//             },
-//             {
-//                 model: Keyword,
-//                 as: "keywords",
-//                 attributes: ["name"]
-//             }
-//         ]
-//     })
-//     .then(applicants => {
-//         // let data = []
-//         // for (const i in applicants) {
-//         //     const keywords = []
+const updateStatus = (req: Request, res: Response) => {
+    const id = req.params.id;
+    const status = req.body.status;
 
-//         //     for (const j in applicants[i].keywords) {
-//         //         keywords.push(applicants[i].keywords[j].name)
-//         //     }
+    // Rate.findAll({
+    //     include: [
+    //         {
+    //             model: CampaignApplicant,
+    //             as: "applicant_rate",
+    //             where: {
+    //                 campaign_id : id
+    //             },
+    //             attributes: []
+    //         },
+    //     ],
+    CampaignApplicant.findAll({
+        include: [
+            {
+                model: Rate,
+                as: "applicant_rate",
+                attributes: []
+            },
+        ],
+        where: {
+            campaign_id: id
+        },  
+        attributes: [
+            "id",
+            [sequelize.literal(`(SELECT (ROUND(SUM(trend_rate + background_rate + creativity_rate)/ (COUNT(user_id) * 3), 1)) AS rate_avg FROM rates WHERE rates.campaign_applicant_id = applicant_rate.id)`), 'rate_avg']
+        ],
+    })
+        // attributes: [
+        //     [sequelize.literal(`(SELECT (ROUND(SUM(trend_rate + background_rate + creativity_rate)/ (COUNT(user_id) * 3), 1)>=3) AS score FROM rates WHERE rates.campaign_applicant_id = applicant_rate.id)`), 'rate_avg']
+        // ],
+        // where: {
+        //     [Op.all] : sequelize.literal('rate_avg')
+        // }
+    // })
+    .then( data => {
+        // Campaign.update({ status: status }, { where: { id: id } })
 
-//         //     data.push({
-//         //         "id": applicants[i].id,
-//         //         "name": applicants[i].name,
-//         //         "gender": applicants[i].gender,
-//         //         "height": applicants[i].height,
-//         //         "weight": applicants[i].weight,
-//         //         "thumbnail": applicants[i].thumbnail_url,
-//         //         "contact": applicants[i].contact,
-//         //         "address": applicants[i].address,
-//         //         // "platform": platform,
-//         //         // "platform_account": platform_account,
-//         //         "campaign_applicant_id" : applicants[i].applicant_campaigns[0].id,
-//         //         "keyword": keywords,
-//         //         "rate" : applicants[i].applicant_campaigns[0].applicant_rate,
-//         //     })
-//         // }
-//         // res.status(200).send(data);
-//         res.status(200).send(applicants);
+        let rate = []
+        for (const i in data) {
+            // console.log(data[i].getDataValue(sequelize.literal('rate_avg'))
+            if (data[i]["rate_avg"] >= 3) {
+                rate.push(data)
+            }
+        }
+        res.send(rate)
 
-
-//     })
-//     .catch(err => {
-//         res.status(500).send({
-//             message: err.message
-//         });
-//     });
-// };
+    })
+}
 
 export default {
-    create, findAll, campaignApplicantfindAll
+    create, 
+    findAll, 
+    campaignApplicantfindAll,
+    updateStatus
 }
-
-function platform_info(arg0: number): any {
-    throw new Error("Function not implemented.");
-}
-  

@@ -22,7 +22,6 @@ const selectedApplicantFindAll = (req: Request, res: Response) => {
         where: {
           is_selected: true
         },
-        // attributes: [],
       },
       {
         model: Campaign,
@@ -62,9 +61,20 @@ const selectedApplicantFindAll = (req: Request, res: Response) => {
     
     for (const i in applicants) {
       let campaigns = []
+      let keywords = []
+      let platforms = []
       for (const j in applicants[i].campaigns) {
         campaigns.push(applicants[i].campaigns[j].title)
       }
+
+      for (const j in applicants[i].keywords) {
+          keywords.push(applicants[i].keywords[j].name)
+      }
+
+      for (const j in applicants[i].platforms) {
+          keywords.push(applicants[i].platforms[j].name)
+      }
+
         data.push({
             "id": applicants[i].id,
             "name": applicants[i].name,
@@ -72,9 +82,8 @@ const selectedApplicantFindAll = (req: Request, res: Response) => {
             "height": applicants[i].height,
             "weight": applicants[i].weight,
             "thumbnail_url": applicants[i].thumbnail_url,
-            "platform": applicants[i].platforms[0].name,
-            "platform_account": applicants[i].applicant_platforms[0].account_name,
-            "keyword": applicants[i].keywords[0].name,   
+            "platform": platforms,
+            "keyword": keywords,
             "campaign": campaigns
         })
     }
@@ -105,11 +114,6 @@ const selectedCampaignApplicantFindAll = (req: Request, res: Response) => {
   ]
   })
   .then(applicants => {
-    // if (!applicants) {
-    //   res.status(404).send({
-    //     message: "Not Exist Applicant"
-    //   })
-    // }
     res.status(200).send({"applicants" : applicants});
   })
   .catch(err => {
@@ -171,14 +175,18 @@ const rateCreateOrUpdate = (req: Request, res: Response) => {
   })
   .then(rate => {
     if(!rate) { Rate.create(createRate)
-      res.status(201).send(createRate)
+      res.status(201).send({
+        "rateAvg": Math.round(((rate.background_rate + rate.trend_rate + rate.creativity_rate) / 3) * 10 ) / 10
+      })
     } else {
       rate.update({
         background_rate: background_rate,
         trend_rate: trend_rate,
         creativity_rate: creativity_rate
       })
-      res.status(200).send(rate)
+      res.status(200).send({
+        "rateAvg": Math.round(((rate.background_rate + rate.trend_rate + rate.creativity_rate) / 3) * 10 ) / 10
+      })
     }
   })
   .catch(err => {
