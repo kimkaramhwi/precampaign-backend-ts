@@ -72,62 +72,60 @@ const findAll = (req: Request, res: Response) => {
     }
 };
 
-const campaignApplicantfindAll = async (req: Request, res: Response) => {
+const campaignApplicantfindAll = (req: Request, res: Response) => {
     const id = req.params.id;
 
     Applicant.findAll({
-        include: [
-            {
-                model: CampaignApplicant,
-                as: "applicant_campaigns",
-                attributes: ["id"],
-                include : [{
-                    model: Rate,
-                    as: "applicant_rate"
-                }],
-            },
-            {
-                model: Campaign,
-                as: "campaigns",
-                where: {id : id},
-                attributes: []
-            },
-            {
-                model: ApplicantPlatform,
-                as: "applicant_platforms",
-                attributes: ["account_name"]
-            },
-            {
-                model: Platform,
-                as: "platforms",
-                attributes: ["name"]
-            },
-            {
-                model: ApplicantKeyword,
-                as: "applicant_keywords",
-                attributes: []
-            },
-            {
-                model: Keyword,
-                as: "keywords",
-                attributes: ["name"]
-            }
-        ]
+        // include: [
+        //     {
+        //         model: CampaignApplicant,
+        //         as: "applicant_campaigns",
+        //         attributes: ["id"],
+        //         where: {
+        //             campaign_id : id
+        //         },
+        //         include : [{
+        //             model: Rate,
+        //             as: "applicant_rate",
+        //             // attributes: [sequelize.literal(`(SELECT ROUND())`)]
+        //             // include: [[sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'applicant_count']]
+        //         }],
+        //     },
+        //     {
+        //         model: Campaign,
+        //         as: "campaigns",
+        //         where: {id : id},
+        //         attributes: []
+        //     },
+        //     {
+        //         model: ApplicantPlatform,
+        //         as: "applicant_platforms",
+        //         attributes: ["account_name"]
+        //     },
+        //     {
+        //         model: Platform,
+        //         as: "platforms",
+        //         attributes: ["name"]
+        //     },
+        //     {
+        //         model: ApplicantKeyword,
+        //         as: "applicant_keywords",
+        //         attributes: []
+        //     },
+        //     {
+        //         model: Keyword,
+        //         as: "keywords",
+        //         attributes: ["name"]
+        //     }
+        // ]
     })
     .then(applicants => {
         let data = []
         for (const i in applicants) {
-            const platform_account = []
-            const platform = []
-            const keyword = []
+            const keywords = []
 
-            for (const j in applicants[i].applicant_platforms) {
-                platform_account.push(applicants[i].applicant_platforms[j].account_name)
-                platform.push(applicants[i].platforms[j].name)
-            }
-            
-            for (const j in applicants[i].applicant_keywords) {
-                keyword.push()
+            for (const j in applicants[i].keywords) {
+                keywords.push(applicants[i].keywords[j].name)
             }
 
             data.push({
@@ -139,9 +137,10 @@ const campaignApplicantfindAll = async (req: Request, res: Response) => {
                 "thumbnail": applicants[i].thumbnail_url,
                 "contact": applicants[i].contact,
                 "address": applicants[i].address,
-                "platform": platform,
-                "platform_account": platform_account,
-                "keyword": applicants[i].keywords[0].name,
+                // "platform": platform,
+                // "platform_account": platform_account,
+                "campaign_applicant_id" : 6,
+                "keyword": keywords,
                 "rate": 0
             })
         }
