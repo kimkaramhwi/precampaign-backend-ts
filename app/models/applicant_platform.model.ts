@@ -1,11 +1,11 @@
 import { Association, DataTypes, Model } from 'sequelize'
 import sequelize from './index'
-import { Applicant } from './appicant.model'
+import { CampaignApplicant } from './campaign_applicant.model'
 import { Platform } from './platform.model'
 
 interface IApplicantPlatformAttributes {
   id?: number;
-  applicant_id: number;
+  campaign_applicant_id: number;
   platform_id: number;
   account_name: string;
 
@@ -19,15 +19,15 @@ export class ApplicantPlatform extends Model<IApplicantPlatformAttributes>
   implements IApplicantPlatformAttributes {
   public id!: number;
   public name!: string;
-  public applicant_id!: number;
+  public campaign_applicant_id!: number;
   public platform_id!: number;
   public account_name!: string;
 
   public static associations: {
-    applicant_platforms: Association<Applicant, ApplicantPlatform>
+    applicant_platforms: Association<CampaignApplicant, ApplicantPlatform>
     platform_applicants: Association<Platform, ApplicantPlatform>
-    applicants: Association<Applicant, Platform>
-    platforms: Association<Platform, Applicant>
+    applicants: Association<CampaignApplicant, Platform>
+    platforms: Association<Platform, CampaignApplicant>
   };
 }
 
@@ -38,11 +38,11 @@ ApplicantPlatform.init(
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    applicant_id: {
+    campaign_applicant_id: {
       allowNull: false,
       type: DataTypes.INTEGER,
       references: {
-        model: Applicant,
+        model: CampaignApplicant,
         key: 'id',
       }
     },
@@ -67,26 +67,26 @@ ApplicantPlatform.init(
   }
 )
 
-Applicant.belongsToMany(Platform, {
+CampaignApplicant.belongsToMany(Platform, {
   through: 'applicant_platform',
-  foreignKey: 'applicant_id',
+  foreignKey: 'campaign_applicant_id',
   as: 'platforms'
 });
 
-Applicant.hasMany(ApplicantPlatform, {
+CampaignApplicant.hasMany(ApplicantPlatform, {
   sourceKey: 'id',
-  foreignKey: 'applicant_id',
+  foreignKey: 'campaign_applicant_id',
   as: 'applicant_platforms'
 });
 
-ApplicantPlatform.belongsTo(Applicant, {
-  foreignKey: 'applicant_id',
+ApplicantPlatform.belongsTo(CampaignApplicant, {
+  foreignKey: 'campaign_applicant_id',
   targetKey: 'id',
   as: 'applicant_platforms',
   onDelete: 'CASCADE',
 });
 
-Platform.belongsToMany(Applicant, {
+Platform.belongsToMany(CampaignApplicant, {
   through: 'applicant_platform',
   foreignKey: 'platform_id',
   as: 'applicants'

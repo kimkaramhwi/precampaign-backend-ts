@@ -1,6 +1,4 @@
 import { Request, Response } from "express";
-import { Op, QueryError } from "sequelize";
-import sequelize from "../models";
 import Campaign from "../models/campaign.model";
 import Applicant from "../models/appicant.model";
 import CampaignApplicant from "../models/campaign_applicant.model";
@@ -22,21 +20,18 @@ const selectedApplicantFindAll = (req: Request, res: Response) => {
         where: {
           is_selected: true
         },
-      },
-      {
-        model: Campaign,
-        as: "campaigns",
-        attributes: ["title"]
-      },
-      {
-        model: ApplicantPlatform,
-        as: "applicant_platforms",
-        attributes: ["account_name"]
-      },
-      {
-        model: Platform,
-        as: "platforms",
-        attributes: ["name"]
+        include: [
+          {
+            model: Platform,
+            as: "platforms",
+            attributes: ["name"]
+          },
+          {
+            model: Campaign,
+            as: "campaign_applicants",
+            attributes: ["title"]
+          },
+        ]
       },
       {
         model: ApplicantKeyword,
@@ -63,16 +58,17 @@ const selectedApplicantFindAll = (req: Request, res: Response) => {
       let campaigns = []
       let keywords = []
       let platforms = []
-      for (const j in applicants[i].campaigns) {
-        campaigns.push(applicants[i].campaigns[j].title)
-      }
+      // for (const j in applicants[i].campaigns) {
+      //   campaigns.push(applicants[i].campaigns[j].title)
+      // }
 
       for (const j in applicants[i].keywords) {
           keywords.push(applicants[i].keywords[j].name)
       }
 
-      for (const j in applicants[i].platforms) {
-          keywords.push(applicants[i].platforms[j].name)
+      for (const j in applicants[i].applicant_campaigns) {
+          platforms.push(applicants[i].applicant_campaigns[j].platforms[0].name)
+          campaigns.push(applicants[i].applicant_campaigns[j].campaign_applicants.title)
       }
 
         data.push({
@@ -82,9 +78,9 @@ const selectedApplicantFindAll = (req: Request, res: Response) => {
             "height": applicants[i].height,
             "weight": applicants[i].weight,
             "thumbnail_url": applicants[i].thumbnail_url,
-            "platform": platforms,
-            "keyword": keywords,
-            "campaign": campaigns
+            "platforms": platforms,
+            "keywords": keywords,
+            "campaigns": campaigns
         })
     }
     res.status(200).send({"applicants" : data});
