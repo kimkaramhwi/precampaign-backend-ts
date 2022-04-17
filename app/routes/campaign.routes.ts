@@ -5,13 +5,12 @@ import applicantController from "../controllers/applicant.controller";
 
 const router = express.Router();
 
-// router.use(verifyToken);
+router.use(verifyToken);
 router.post("", campaigncontroller.create);
 router.get("", campaigncontroller.findAll);
 router.get("/:id", campaigncontroller.campaignApplicantfindAll);
 router.patch("/:id", campaigncontroller.updateStatus);
 router.get("/rate/:id", applicantController.applicantRate);
-router.get("/accepted-applicants-list/:id", applicantController.selectedCampaignApplicantFindAll);
 router.get("/accepted-applicants-list/:id", applicantController.selectedCampaignApplicantFindAll);
 
 export default router;

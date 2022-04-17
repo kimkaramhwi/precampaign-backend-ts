@@ -19,6 +19,10 @@ interface IRateAttributes {
 
 export class Rate extends Model<IRateAttributes>
   implements IRateAttributes {
+  [x: string]: any;
+  static find(arg0: { include: { model: typeof CampaignApplicant; as: string; where: { campaign_id: string; }; }; }) {
+      throw new Error("Method not implemented.");
+  }
   public id!: number;
   public campaign_applicant_id!: number;
   public user_id!: number;
