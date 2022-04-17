@@ -9,6 +9,7 @@ const router = express.Router();
 router.post("", campaigncontroller.create);
 router.get("", campaigncontroller.findAll);
 router.get("/:id", campaigncontroller.campaignApplicantfindAll);
-router.get("/rate/:campaign", applicantController.applicantRate);
+router.get("/rate/:id", applicantController.applicantRate);
+router.get("/accepted-applicants-list/:id", applicantController.selectedCampaignApplicantFindAll);
 
 export default router;

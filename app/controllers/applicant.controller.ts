@@ -23,81 +23,6 @@ const selectedApplicantFindAll = (req: Request, res: Response) => {
           is_selected: true
         },
         // attributes: [],
-        include: [{
-          model: Campaign,
-          as: "campaign_applicants",
-          attributes: ["title"]
-        }],
-      },
-      {
-        model: ApplicantPlatform,
-        as: "applicant_platforms",
-        attributes: ["account_name"]
-      },
-      {
-        model: Platform,
-        as: "platforms",
-        attributes: ["name"]
-      },
-      {
-        model: ApplicantKeyword,
-        as: "applicant_keywords",
-        attributes: []
-      },
-      {
-        model: Keyword,
-        as: "keywords",
-        attributes: ["name"]
-      }
-  ]
-  })
-  .then(applicants => {
-    if (!applicants) {
-      res.status(404).send({
-        message: "Not Exist Applicant"
-      })
-    }
-
-    // let data = []
-    // let campaigns = []
-    // for (const i in applicants) {
-    //   for (const j in applicants[i].campaigns) {
-    //     campaigns.push(applicants[i].campaigns[j].title)
-    //   }
-    //     data.push({
-    //         "id": applicants[i].id,
-    //         "name": applicants[i].name,
-    //         "gender": applicants[i].gender,
-    //         "height": applicants[i].height,
-    //         "weight": applicants[i].weight,
-    //         "thumbnail_url": applicants[i].thumbnail_url,
-    //         "platform": applicants[i].platforms[0].name,
-    //         "platform_account": applicants[i].applicant_platforms[0].account_name,
-    //         "keyword": applicants[i].keywords[0].name,   
-    //         "campaign": campaigns
-    //     })
-    // }
-    res.status(200).send({"applicants" : applicants});
-  })
-  .catch(err => {
-    res.status(500).send({
-      message: err.message
-    })
-  })
-};
-
-const selectedCampaignApplicantFindAll = (req: Request, res: Response) => {
-
-  Applicant.findAll({
-    attributes: ["name", "address", "gender", "height", "weight"],
-    include: [
-      {
-        model: CampaignApplicant,
-        as: "applicant_campaigns",
-        where: {
-          is_selected: true
-        },
-        attributes: []
       },
       {
         model: Campaign,
@@ -134,9 +59,12 @@ const selectedCampaignApplicantFindAll = (req: Request, res: Response) => {
     }
 
     let data = []
-
+    
     for (const i in applicants) {
-      // for (const j in applicants[i].campaigns)
+      let campaigns = []
+      for (const j in applicants[i].campaigns) {
+        campaigns.push(applicants[i].campaigns[j].title)
+      }
         data.push({
             "id": applicants[i].id,
             "name": applicants[i].name,
@@ -147,7 +75,7 @@ const selectedCampaignApplicantFindAll = (req: Request, res: Response) => {
             "platform": applicants[i].platforms[0].name,
             "platform_account": applicants[i].applicant_platforms[0].account_name,
             "keyword": applicants[i].keywords[0].name,   
-            // "campaign": applicants[i].campaigns[j].title
+            "campaign": campaigns
         })
     }
     res.status(200).send({"applicants" : data});
@@ -159,8 +87,40 @@ const selectedCampaignApplicantFindAll = (req: Request, res: Response) => {
   })
 };
 
+const selectedCampaignApplicantFindAll = (req: Request, res: Response) => {
+  const campaignId = parseInt(req.params.id);
+
+  Applicant.findAll({
+    attributes: ["name", "gender", "birthdate", "address", "contact", "thumbnail_url"],
+    include: [
+      {
+        model: CampaignApplicant,
+        as: "applicant_campaigns",
+        where: {
+          is_selected: true,
+          campaign_id: campaignId
+        },
+        attributes: []
+      },
+  ]
+  })
+  .then(applicants => {
+    // if (!applicants) {
+    //   res.status(404).send({
+    //     message: "Not Exist Applicant"
+    //   })
+    // }
+    res.status(200).send({"applicants" : applicants});
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: err.message
+    })
+  })
+};
+
 const applicantRate = (req: Request, res: Response) => {
-  const campaignId = parseInt(req.params.campaign);
+  const campaignId = parseInt(req.params.id);
   const applicantId = req.query["applicant-id"];
 
   ApplicantImage.findAll({
@@ -231,5 +191,6 @@ const rateCreateOrUpdate = (req: Request, res: Response) => {
 export default {
   selectedApplicantFindAll,
   applicantRate,
-  rateCreateOrUpdate
+  rateCreateOrUpdate,
+  selectedCampaignApplicantFindAll
 }

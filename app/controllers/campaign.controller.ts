@@ -74,89 +74,184 @@ const findAll = (req: Request, res: Response) => {
 
 const campaignApplicantfindAll = (req: Request, res: Response) => {
     const id = req.params.id;
-
+    
     Applicant.findAll({
-        // include: [
-        //     {
-        //         model: CampaignApplicant,
-        //         as: "applicant_campaigns",
-        //         attributes: ["id"],
-        //         where: {
-        //             campaign_id : id
-        //         },
-        //         include : [{
-        //             model: Rate,
-        //             as: "applicant_rate",
-        //             // attributes: [sequelize.literal(`(SELECT ROUND())`)]
-        //             // include: [[sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'applicant_count']]
-        //         }],
-        //     },
-        //     {
-        //         model: Campaign,
-        //         as: "campaigns",
-        //         where: {id : id},
-        //         attributes: []
-        //     },
-        //     {
-        //         model: ApplicantPlatform,
-        //         as: "applicant_platforms",
-        //         attributes: ["account_name"]
-        //     },
-        //     {
-        //         model: Platform,
-        //         as: "platforms",
-        //         attributes: ["name"]
-        //     },
-        //     {
-        //         model: ApplicantKeyword,
-        //         as: "applicant_keywords",
-        //         attributes: []
-        //     },
-        //     {
-        //         model: Keyword,
-        //         as: "keywords",
-        //         attributes: ["name"]
-        //     }
-        // ]
+        include: [
+            {
+                model: CampaignApplicant,
+                as: "applicant_campaigns",
+                attributes: ["id"],
+                where: {
+                    campaign_id : id
+                },
+                include : [{
+                    model: Rate,
+                    as: "applicant_rate",
+                    attributes: [
+                        [sequelize.literal(`(SELECT id FROM campaign_applicant WHERE campaign_id = ${id} and applicant_id = Applicant.id )`), 'campaignapplicant_id']
+                        [sequelize.literal(`(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates WHERE campaign_applicant_id = campaignapplicant_id)`), 'avg_rates']
+                        // [sequelize.literal(`(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates WHERE IN (SELECT id FROM campaign_applicant WHERE campaign_id = ${id} and applicant_id = Applicant.id ))`), 'avg_rates']
+                    ]
+                    // include: [[sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'applicant_count']]
+                }],
+            },
+            {
+                model: Campaign,
+                as: "campaigns",
+                where: {id : id},
+                attributes: []
+            },
+            {
+                model: ApplicantPlatform,
+                as: "applicant_platforms",
+                attributes: ["account_name"]
+            },
+            {
+                model: Platform,
+                as: "platforms",
+                attributes: ["name"]
+            },
+            {
+                model: ApplicantKeyword,
+                as: "applicant_keywords",
+                attributes: []
+            },
+            {
+                model: Keyword,
+                as: "keywords",
+                attributes: ["name"]
+            }
+        ]
     })
     .then(applicants => {
-        let data = []
-        for (const i in applicants) {
-            const keywords = []
+        // let data = []
+        // for (const i in applicants) {
+        //     const keywords = []
 
-            for (const j in applicants[i].keywords) {
-                keywords.push(applicants[i].keywords[j].name)
-            }
+        //     for (const j in applicants[i].keywords) {
+        //         keywords.push(applicants[i].keywords[j].name)
+        //     }
 
-            data.push({
-                "id": applicants[i].id,
-                "name": applicants[i].name,
-                "gender": applicants[i].gender,
-                "height": applicants[i].height,
-                "weight": applicants[i].weight,
-                "thumbnail": applicants[i].thumbnail_url,
-                "contact": applicants[i].contact,
-                "address": applicants[i].address,
-                // "platform": platform,
-                // "platform_account": platform_account,
-                "campaign_applicant_id" : 6,
-                "keyword": keywords,
-                "rate": 0
-            })
-        }
-        res.status(200).send(data);
-        // res.status(200).send(applicants);
+        //     data.push({
+        //         "id": applicants[i].id,
+        //         "name": applicants[i].name,
+        //         "gender": applicants[i].gender,
+        //         "height": applicants[i].height,
+        //         "weight": applicants[i].weight,
+        //         "thumbnail": applicants[i].thumbnail_url,
+        //         "contact": applicants[i].contact,
+        //         "address": applicants[i].address,
+        //         // "platform": platform,
+        //         // "platform_account": platform_account,
+        //         "campaign_applicant_id" : applicants[i].applicant_campaigns[0].id,
+        //         "keyword": keywords,
+        //         "rate" : applicants[i].applicant_campaigns[0].applicant_rate,
+        //     })
+        // }
+        // res.status(200).send(data);
+        res.status(200).send(applicants);
 
 
     })
-    // .catch(err => {
-    //     res.status(500).send({
-    //         message: err.message
-    //     });
-    // });
+    .catch(err => {
+        res.status(500).send({
+            message: err.message
+        });
+    });
 };
+// const campaignApplicantfindAll = (req: Request, res: Response) => {
+//     const id = req.params.id;
+
+//     Applicant.findAll({
+//         include: [
+//             {
+//                 model: CampaignApplicant,
+//                 as: "applicant_campaigns",
+//                 attributes: ["id"],
+//                 where: {
+//                     campaign_id : id
+//                 },
+//                 include : [{
+//                     model: Rate,
+//                     as: "applicant_rate",
+//                     attributes: [
+//                         // [sequelize.literal(`(SELECT id FROM campaign_applicant WHERE campaign_id = ${id} and applicant_id = Applicant.id )`), 'campaignapplicant_id']
+//                         // [sequelize.literal(`(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates WHERE campaign_applicant_id = CampaignApplicant_id)`), 'avg_rates']
+//                         [sequelize.literal(`(SELECT ROUND(SUM(trend_rate + background_rate + creativity_rate)/3, 1) AS rates FROM rates WHERE IN (SELECT id FROM campaign_applicant WHERE campaign_id = ${id} and applicant_id = Applicant.id ))`), 'avg_rates']
+//                     ]
+//                     // include: [[sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'applicant_count']]
+//                 }],
+//             },
+//             {
+//                 model: Campaign,
+//                 as: "campaigns",
+//                 where: {id : id},
+//                 attributes: []
+//             },
+//             {
+//                 model: ApplicantPlatform,
+//                 as: "applicant_platforms",
+//                 attributes: ["account_name"]
+//             },
+//             {
+//                 model: Platform,
+//                 as: "platforms",
+//                 attributes: ["name"]
+//             },
+//             {
+//                 model: ApplicantKeyword,
+//                 as: "applicant_keywords",
+//                 attributes: []
+//             },
+//             {
+//                 model: Keyword,
+//                 as: "keywords",
+//                 attributes: ["name"]
+//             }
+//         ]
+//     })
+//     .then(applicants => {
+//         // let data = []
+//         // for (const i in applicants) {
+//         //     const keywords = []
+
+//         //     for (const j in applicants[i].keywords) {
+//         //         keywords.push(applicants[i].keywords[j].name)
+//         //     }
+
+//         //     data.push({
+//         //         "id": applicants[i].id,
+//         //         "name": applicants[i].name,
+//         //         "gender": applicants[i].gender,
+//         //         "height": applicants[i].height,
+//         //         "weight": applicants[i].weight,
+//         //         "thumbnail": applicants[i].thumbnail_url,
+//         //         "contact": applicants[i].contact,
+//         //         "address": applicants[i].address,
+//         //         // "platform": platform,
+//         //         // "platform_account": platform_account,
+//         //         "campaign_applicant_id" : applicants[i].applicant_campaigns[0].id,
+//         //         "keyword": keywords,
+//         //         "rate" : applicants[i].applicant_campaigns[0].applicant_rate,
+//         //     })
+//         // }
+//         // res.status(200).send(data);
+//         res.status(200).send(applicants);
+
+
+//     })
+//     .catch(err => {
+//         res.status(500).send({
+//             message: err.message
+//         });
+//     });
+// };
 
 export default {
     create, findAll, campaignApplicantfindAll
+}
+
+function platform_info(arg0: number): any {
+    throw new Error("Function not implemented.");
 }
   
