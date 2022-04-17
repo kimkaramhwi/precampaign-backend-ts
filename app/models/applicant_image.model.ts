@@ -22,6 +22,7 @@ export class ApplicantImage extends Model<IApplicantImageAttributes>
 
   public static associations: {
     applicantImages: Association<CampaignApplicant, ApplicantImage>
+    imagesApplicant: Association<ApplicantImage, CampaignApplicant>
   };
 }
 
@@ -51,13 +52,13 @@ ApplicantImage.init(
   }
 )
 
-ApplicantImage.hasMany(CampaignApplicant, {
+CampaignApplicant.hasMany(ApplicantImage, {
   sourceKey: 'id',
   foreignKey: 'campaign_applicant_id',
   as: "applicantImages"
 });
 
-CampaignApplicant.belongsTo(ApplicantImage, {
+ApplicantImage.belongsTo(CampaignApplicant, {
   foreignKey: 'campaign_applicant_id',
   targetKey: 'id',
   as: "applicantImages",

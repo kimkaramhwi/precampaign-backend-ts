@@ -117,6 +117,19 @@ const campaignApplicantfindAll = async (req: Request, res: Response) => {
     .then(applicants => {
         let data = []
         for (const i in applicants) {
+            const platform_account = []
+            const platform = []
+            const keyword = []
+
+            for (const j in applicants[i].applicant_platforms) {
+                platform_account.push(applicants[i].applicant_platforms[j].account_name)
+                platform.push(applicants[i].platforms[j].name)
+            }
+            
+            for (const j in applicants[i].applicant_keywords) {
+                keyword.push()
+            }
+
             data.push({
                 "id": applicants[i].id,
                 "name": applicants[i].name,
@@ -126,19 +139,22 @@ const campaignApplicantfindAll = async (req: Request, res: Response) => {
                 "thumbnail": applicants[i].thumbnail_url,
                 "contact": applicants[i].contact,
                 "address": applicants[i].address,
-                "platform": applicants[i].platforms[0].name,
-                "platform_account": applicants[i].applicant_platforms[0].account_name,
+                "platform": platform,
+                "platform_account": platform_account,
                 "keyword": applicants[i].keywords[0].name,
                 "rate": 0
             })
         }
-        res.status(200).send({"applicants" : data});
+        res.status(200).send(data);
+        // res.status(200).send(applicants);
+
+
     })
-    .catch(err => {
-        res.status(500).send({
-            message: err.message
-        });
-    });
+    // .catch(err => {
+    //     res.status(500).send({
+    //         message: err.message
+    //     });
+    // });
 };
 
 export default {

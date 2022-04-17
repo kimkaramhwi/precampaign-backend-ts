@@ -1,13 +1,11 @@
 import { Association, DataTypes, Model } from 'sequelize'
 import sequelize from './index'
-import { Applicant } from './appicant.model'
-import { Campaign } from './campaign.model'
+import { CampaignApplicant } from './campaign_applicant.model'
 import { User } from './user.model'
 
 interface IRateAttributes {
   id?: number;
-  applicant_id: number;
-  campaign_id: number;
+  campaign_applicant_id: number;
   user_id: number;
   background_rate: number;
   trend_rate: number;
@@ -22,8 +20,7 @@ interface IRateAttributes {
 export class Rate extends Model<IRateAttributes>
   implements IRateAttributes {
   public id!: number;
-  public applicant_id!: number;
-  public campaign_id!: number;
+  public campaign_applicant_id!: number;
   public user_id!: number;
   public background_rate!: number;
   public trend_rate!: number;
@@ -31,14 +28,9 @@ export class Rate extends Model<IRateAttributes>
 
   public static associations: {
     user_rate: Association<User, Rate>
-    applicant_rate: Association<Applicant, Rate>
-    campaign_rate: Association<Campaign, Rate>
-    user_applicants: Association<User, Applicant>
-    user_campaigns: Association<User, Campaign>
-    applicant_users: Association<Applicant, User>
-    applicant_campaigns: Association<Applicant, Campaign>
-    campaign_users: Association<Campaign, User>
-    campaign_applicants: Association<Campaign, Applicant>
+    applicant_rate: Association<CampaignApplicant, Rate>
+    users: Association<User, CampaignApplicant>
+    campaignApplicants: Association<CampaignApplicant, User>
   };
 }
 
@@ -49,19 +41,11 @@ Rate.init(
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    applicant_id: {
+    campaign_applicant_id: {
       allowNull: false,
       type: DataTypes.INTEGER,
       references: {
-        model: Applicant,
-        key: "id"
-      }
-    },
-    campaign_id: {
-      allowNull: false,
-      type: DataTypes.INTEGER,
-      references: {
-        model: Campaign,
+        model: CampaignApplicant,
         key: "id"
       }
     },
@@ -94,45 +78,26 @@ Rate.init(
   }
 )
 
-Campaign.belongsToMany(User, {
+CampaignApplicant.belongsToMany(User, {
   through: 'rate',
-  foreignKey: 'campaign_id',
+  foreignKey: 'campaign_applicant_id',
   as: "users"
 });
 
-Campaign.hasMany(Rate, {
+CampaignApplicant.hasMany(Rate, {
   sourceKey: 'id',
-  foreignKey: 'campaign_id',
-  as: "campaign_rate"
-});
-
-Rate.belongsTo(Campaign, {
-  foreignKey: 'campaign_id',
-  targetKey: 'id',
-  as: "campaign_rate",
-  onDelete: 'CASCADE',
-});
-
-Applicant.belongsToMany(User, {
-  through: 'rate',
-  foreignKey: 'applicant_id',
-  as: "users"
-});
-
-Applicant.hasMany(Rate, {
-  sourceKey: 'id',
-  foreignKey: 'applicant_id',
+  foreignKey: 'campaign_applicant_id',
   as: "applicant_rate"
 });
 
-Rate.belongsTo(Applicant, {
-  foreignKey: 'applicant_id',
+Rate.belongsTo(CampaignApplicant, {
+  foreignKey: 'campaign_applicant_id',
   targetKey: 'id',
   as: "applicant_rate",
   onDelete: 'CASCADE',
 });
 
-User.belongsToMany(Campaign, {
+User.belongsToMany(CampaignApplicant, {
   through: 'rate',
   foreignKey: 'user_id',
   as: "campaignApplicants"

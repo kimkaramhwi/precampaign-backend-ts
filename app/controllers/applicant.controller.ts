@@ -60,10 +60,7 @@ const selectedApplicantFindAll = (req: Request, res: Response) => {
 
     let data = []
 
-    // [for (let j in applicants) j.name] 
     for (const i in applicants) {
-      for (let j in applicants[i].campaigns) {
-      // for (let j: number; j < applicants[i].campaigns.length; j++) {
         data.push({
             "id": applicants[i].id,
             "name": applicants[i].name,
@@ -74,9 +71,8 @@ const selectedApplicantFindAll = (req: Request, res: Response) => {
             "platform": applicants[i].platforms[0].name,
             "platform_account": applicants[i].applicant_platforms[0].account_name,
             "keyword": applicants[i].keywords[0].name,   
-            "campaign": applicants[i].campaigns[j].title
+            // "campaign": applicants[i].campaigns[j].title
         })
-      }
     }
     res.status(200).send({"applicants" : data});
   })
@@ -88,70 +84,46 @@ const selectedApplicantFindAll = (req: Request, res: Response) => {
 };
 
 const applicantRate = (req: Request, res: Response) => {
-  const campaignApplicantId = parseInt(req.params.id);
-  
-  Applicant.findOne({
-    where: {
-      id: 2
-    }
-    // include: [{
-    //   model: CampaignApplicant, 
-    //   // where: {
-    //     // id : campaignApplicantId
-    // //   // },
-    //   include: [{
-    //     model: ApplicantImage,
-    //     // where: {
-    //     //   campaign_applicant_id : campaignApplicantId
-    //     // },
-    //     attributes: ["image_url"]
-    //   }]
-    // }],
+  const campaignId = parseInt(req.params.campaign);
+  const applicantId = req.query["applicant-id"];
+  console.log(applicantId)
+  ApplicantImage.findAll({
+    attributes: ["image_url"],
+    include: {
+      model: CampaignApplicant,
+      as: "applicantImages",
+      where: {
+        applicant_id: applicantId,
+        campaign_id: campaignId
+      },
+    },
   })
-  .then(da => {
-    res.send(da)
+  .then(image => {
+    let data = []
+    for (const i in image) {
+      data.push(image[i].image_url)
+    }
+    res.send({"image" : data})
+  })
+  .catch(err => {
+    res.status(500).send({
+      message: err.message
+    })
   })
 };
 
-// const hi = (req: Request, res: Response) => {
-//   Campaign.findOne({
-//     where: {
-//       id :1
-//     }
-//   })
-//   .then( data => {
-//     applicantRate
-//     res.status(200).send(data)
-//   })
-//   .catch( err => {
-//   res.status(500).send({
-//     message: err.message
-//     })
-//   })
-// };
-// }
-
-
-// 
 const rateCreateOrUpdate = (req: Request, res: Response) => {
   const userId = req.userId as unknown as number;
-  const campaignId = req.params.id;
-  const applicantId = req.body.applicant_id;
+  const campaignApplicantId = req.body.campaign_applicant_id;
   const background_rate = req.body.background_rate;
   const trend_rate = req.body.trend_rate;
   const creativity_rate = req.body.creativity_rate;
-  // const campaignApplicantId = CampaignApplicant.findOne({
-  //   where: {
-  //     campaign_id : campaignId,
-  //     applicant_id : applicantId
-  //   }
-  // })[0].id
-  // const Where = {
-  //   user_id : userId,
-  //   campaign_applicant_id : campaignApplicantId
-  // };
+  const Where = {
+    user_id : userId,
+    campaign_applicant_id : campaignApplicantId
+  };
   const createRate = {
-    // campaign_applicant_id : campaignApplicantId,
+    campaign_applicant_id : campaignApplicantId,
     user_id : userId,
     background_rate: background_rate,
     trend_rate: trend_rate,
@@ -159,31 +131,11 @@ const rateCreateOrUpdate = (req: Request, res: Response) => {
   };
   
   Rate.findOne({
-    include: {
-      model: CampaignApplicant,
-      as: "applicant_rate",
-      where: {
-        campaign_id: campaignId,
-        applicant_id: applicantId,
-      },
-      attributes: []
-    }
+      where: Where,
   })
   .then(rate => {
-    if(!rate) { Rate.create({
-      user_id : userId,
-      campaign_applicant_id: applicantId,
-      background_rate: background_rate,
-      trend_rate: trend_rate,
-      creativity_rate: creativity_rate
-    })
-    res.status(201).send({
-      user_id : userId,
-      campaign_applicant_id: applicantId,
-      background_rate: background_rate,
-      trend_rate: trend_rate,
-      creativity_rate: creativity_rate
-    })
+    if(!rate) { Rate.create(createRate)
+      res.status(201).send(createRate)
     } else {
       rate.update({
         background_rate: background_rate,

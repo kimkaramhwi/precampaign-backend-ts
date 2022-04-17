@@ -18,6 +18,7 @@ interface ICampaignApplicantAttributes {
 export class CampaignApplicant extends Model<ICampaignApplicantAttributes>
 
   implements ICampaignApplicantAttributes {
+  [x: string]: any;
   public id!: number;
   public applicant_id!: number;
   public campaign_id!: number;

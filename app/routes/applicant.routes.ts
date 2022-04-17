@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.use(verifyToken);
 router.get("", applicantcontroller.selectedApplicantFindAll);
-router.get("/:id", applicantcontroller.applicantRate);
+router.get("/:campaign", applicantcontroller.applicantRate);
 router.post("/:id", applicantcontroller.rateCreateOrUpdate);
 
 export default router;
