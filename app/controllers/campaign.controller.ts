@@ -73,6 +73,7 @@ const findAll = (req: Request, res: Response) => {
 };
 
 const campaignApplicantfindAll = (req: Request, res: Response) => {
+    console.log(req.headers)
     const id = req.params.id;
 
     Applicant.findAll({
@@ -89,9 +90,7 @@ const campaignApplicantfindAll = (req: Request, res: Response) => {
                         model: Rate,
                         as: "applicant_rate",
                         attributes: [
-                            [sequelize.literal(
-                                `(SELECT (ROUND(SUM(trend_rate + background_rate + creativity_rate)/ (COUNT(user_id) * 3), 1)) AS rate_avg FROM rates WHERE rates.campaign_applicant_id = applicant_campaigns.id)`
-                                ), 'rate_avg']
+                            [sequelize.literal(`(SELECT (ROUND(SUM(trend_rate + background_rate + creativity_rate)/ (COUNT(user_id) * 3), 1)) AS rate_avg FROM rates WHERE rates.campaign_applicant_id = applicant_campaigns.id)`), 'rate_avg']
                         ]
                     },
                     {
@@ -146,7 +145,7 @@ const campaignApplicantfindAll = (req: Request, res: Response) => {
                 "platform_account": applicants[i].applicant_campaigns[0].applicant_platforms[0].account_name || [],
                 "campaign_applicant_id" : applicants[i].applicant_campaigns[0].id || [],
                 "keywords": keywords,
-                "rate" : applicants[i].applicant_campaigns[0].applicant_rate[0] || [],
+                "rate" : applicants[i].applicant_campaigns[0].applicant_rate[0] || { "rate_avg": "0" },
             })
         }
         res.status(200).send(data);
@@ -186,7 +185,7 @@ const updateStatus = (req: Request, res: Response) => {
                     data[i].update({is_selected : true})
                 }
             }
-            res.status(200).send("SUCCESS")
+            res.status(200).send({status})
         }
     })
     .catch ( err => {

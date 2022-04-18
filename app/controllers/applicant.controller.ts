@@ -5,14 +5,13 @@ import CampaignApplicant from "../models/campaign_applicant.model";
 import Rate from "../models/rate.model";
 import ApplicantImage from "../models/applicant_image.model";
 import ApplicantKeyword from "../models/applicant_keyword.model";
-import ApplicantPlatform from "../models/applicant_platform.model";
 import Keyword from "../models/keyword.model";
 import Platform from "../models/platform.model";
 
 const selectedApplicantFindAll = (req: Request, res: Response) => {
 
   Applicant.findAll({
-    attributes: ["thumbnail_url", "name", "gender", "height", "weight"],
+    attributes: ["id", "thumbnail_url", "name", "gender", "height", "weight"],
     include: [
       {
         model: CampaignApplicant,
@@ -90,7 +89,7 @@ const selectedCampaignApplicantFindAll = (req: Request, res: Response) => {
   const campaignId = parseInt(req.params.id);
 
   Applicant.findAll({
-    attributes: ["name", "gender", "birthdate", "address", "contact", "thumbnail_url"],
+    attributes: ["id", "name", "gender", "birthdate", "address", "contact", "thumbnail_url"],
     include: [
       {
         model: CampaignApplicant,
@@ -159,6 +158,7 @@ const rateCreateOrUpdate = (req: Request, res: Response) => {
     trend_rate: trend_rate,
     creativity_rate: creativity_rate
   };
+
   
   Rate.findOne({
       where: Where,
