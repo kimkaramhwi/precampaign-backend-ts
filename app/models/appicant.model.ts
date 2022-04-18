@@ -2,8 +2,8 @@ import { Model, DataTypes } from "sequelize"
 import sequelize from "../models";
 
 enum Gender {
-  Male = "Male",
-  Female = "Female",
+  M = "M",
+  F = "F",
   Etc = "Etc",
 }
 
@@ -21,6 +21,7 @@ export interface IApplicantAttributes {
 
 export class Applicant extends Model<IApplicantAttributes>
   implements IApplicantAttributes {
+  [x: string]: any;
   public id!: number;
   public name!: string;
   public gender!: Gender;
@@ -33,7 +34,6 @@ export class Applicant extends Model<IApplicantAttributes>
 
   public readonly createAt!: Date;
   public readonly updateAt!: Date;
-
 }
 
 Applicant.init(
@@ -49,7 +49,7 @@ Applicant.init(
     },
     gender: {
       allowNull: false,
-      type: DataTypes.ENUM(Gender.Male, Gender.Female, Gender.Etc),
+      type: DataTypes.ENUM(Gender.M, Gender.F, Gender.Etc),
     },
     height: {
       allowNull: false,
