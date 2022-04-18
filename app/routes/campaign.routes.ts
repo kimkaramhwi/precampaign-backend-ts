@@ -1,5 +1,5 @@
 import express from "express";
-import {verifyToken} from "../middlewares/authJwt";
+import { verifyToken } from "../middlewares/authJwt";
 import campaigncontroller from "../controllers/campaign.controller";
 import applicantController from "../controllers/applicant.controller";
 
