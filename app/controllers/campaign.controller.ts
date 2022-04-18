@@ -73,7 +73,6 @@ const findAll = (req: Request, res: Response) => {
 };
 
 const campaignApplicantfindAll = (req: Request, res: Response) => {
-    console.log(req.headers)
     const id = req.params.id;
 
     Applicant.findAll({
