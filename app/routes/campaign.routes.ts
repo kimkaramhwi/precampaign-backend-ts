@@ -10,7 +10,7 @@ router.post("", campaigncontroller.create);
 router.get("", campaigncontroller.findAll);
 router.get("/:id", campaigncontroller.campaignApplicantfindAll);
 router.patch("/:id", campaigncontroller.updateStatus);
-router.get("/rate/:id", applicantController.applicantRate);
+router.get("/applicant-images/:id", applicantController.applicantImages);
 router.get("/accepted-applicants-list/:id", applicantController.selectedCampaignApplicantFindAll);
 
 export default router;

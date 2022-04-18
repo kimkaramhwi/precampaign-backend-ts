@@ -46,30 +46,24 @@ const selectedApplicantFindAll = (req: Request, res: Response) => {
   ]
   })
   .then(applicants => {
-    if (!applicants) {
-      res.status(404).send({
-        message: "Not Exist Applicant"
-      })
-    }
-
     let data = []
     
     for (const i in applicants) {
       let campaigns = []
       let keywords = []
       let platforms = []
-      // for (const j in applicants[i].campaigns) {
-      //   campaigns.push(applicants[i].campaigns[j].title)
-      // }
 
       for (const j in applicants[i].keywords) {
           keywords.push(applicants[i].keywords[j].name)
       }
 
       for (const j in applicants[i].applicant_campaigns) {
-          platforms.push(applicants[i].applicant_campaigns[j].platforms[0].name)
-          campaigns.push(applicants[i].applicant_campaigns[j].campaign_applicants.title)
+        campaigns.push(applicants[i].applicant_campaigns[j].campaign_applicants.title)
+        platforms.push(applicants[i].applicant_campaigns[j].platforms[0].name)
       }
+
+      const set = new Set(platforms);
+      platforms = [...set];
 
         data.push({
             "id": applicants[i].id,
@@ -119,7 +113,7 @@ const selectedCampaignApplicantFindAll = (req: Request, res: Response) => {
   })
 };
 
-const applicantRate = (req: Request, res: Response) => {
+const applicantImages = (req: Request, res: Response) => {
   const campaignId = parseInt(req.params.id);
   const applicantId = req.query["applicant-id"];
 
@@ -194,7 +188,7 @@ const rateCreateOrUpdate = (req: Request, res: Response) => {
 
 export default {
   selectedApplicantFindAll,
-  applicantRate,
+  applicantImages,
   rateCreateOrUpdate,
   selectedCampaignApplicantFindAll
 }
