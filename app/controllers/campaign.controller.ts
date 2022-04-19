@@ -46,7 +46,7 @@ const findAll = (req: Request, res: Response) => {
             limit: limit,
             offset: offset,
             attributes: {
-                include: [[sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = Campaign.id)'), 'applicant_count']]
+                include: [[sequelize.literal('(SELECT COUNT(*) FROM campaign_applicant WHERE campaign_applicant.campaign_id = campaign.id)'), 'applicant_count']]
             },
             order: [[sequelize.literal('applicant_count'), sort_order]]
         })
@@ -82,9 +82,9 @@ const campaignApplicantfindAll = (req: Request, res: Response) => {
                 as: "applicant_campaigns",
                 attributes: ["id"],
                 where: {
-                    campaign_id : id
+                    campaign_id: id
                 },
-                include : [
+                include: [
                     {
                         model: Rate,
                         as: "applicant_rate",
@@ -107,7 +107,7 @@ const campaignApplicantfindAll = (req: Request, res: Response) => {
             {
                 model: Campaign,
                 as: "campaigns",
-                where: {id : id},
+                where: { id: id },
                 attributes: []
             },
             {
@@ -122,38 +122,38 @@ const campaignApplicantfindAll = (req: Request, res: Response) => {
             }
         ]
     })
-    .then(applicants => {
-        let data = []
-        for (const i in applicants) {
-            const keywords = []
+        .then(applicants => {
+            let data = []
+            for (const i in applicants) {
+                const keywords = []
 
-            for (const j in applicants[i].keywords) {
-                keywords.push(applicants[i].keywords[j].name)
+                for (const j in applicants[i].keywords) {
+                    keywords.push(applicants[i].keywords[j].name)
+                }
+
+                data.push({
+                    "id": applicants[i].id || [],
+                    "name": applicants[i].name || [],
+                    "gender": applicants[i].gender || [],
+                    "height": applicants[i].height || [],
+                    "weight": applicants[i].weight || [],
+                    "thumbnail": applicants[i].thumbnail_url || [],
+                    "contact": applicants[i].contact || [],
+                    "address": applicants[i].address || [],
+                    "platform": applicants[i].applicant_campaigns[0].platforms[0].name || [],
+                    "platform_account": applicants[i].applicant_campaigns[0].applicant_platforms[0].account_name || [],
+                    "campaign_applicant_id": applicants[i].applicant_campaigns[0].id || [],
+                    "keywords": keywords,
+                    "rate": applicants[i].applicant_campaigns[0].applicant_rate[0] || { "rate_avg": "0" },
+                })
             }
-
-            data.push({
-                "id": applicants[i].id || [],
-                "name": applicants[i].name || [],
-                "gender": applicants[i].gender || [],
-                "height": applicants[i].height || [],
-                "weight": applicants[i].weight || [],
-                "thumbnail": applicants[i].thumbnail_url || [],
-                "contact": applicants[i].contact || [],
-                "address": applicants[i].address || [],
-                "platform": applicants[i].applicant_campaigns[0].platforms[0].name || [],
-                "platform_account": applicants[i].applicant_campaigns[0].applicant_platforms[0].account_name || [],
-                "campaign_applicant_id" : applicants[i].applicant_campaigns[0].id || [],
-                "keywords": keywords,
-                "rate" : applicants[i].applicant_campaigns[0].applicant_rate[0] || { "rate_avg": "0" },
-            })
-        }
-        res.status(200).send(data);
-    })
-    .catch(err => {
-        res.status(500).send({
-            message: err.message
+            res.status(200).send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message
+            });
         });
-    });
 };
 
 const updateStatus = (req: Request, res: Response) => {
@@ -169,34 +169,34 @@ const updateStatus = (req: Request, res: Response) => {
         ],
         where: {
             campaign_id: id,
-        },  
+        },
     })
-    .then( data => {
-        Campaign.update({ status: status }, { where: { id: id } })
-        if (status === "Termination") {
-            for (const i in data) {
-                let rate_avg = 0
-                for (let j = 0; j < data[i].applicant_rate.length; j++) {
-                    rate_avg += ((data[i].applicant_rate[j].background_rate + data[i].applicant_rate[j].trend_rate + data[i].applicant_rate[j].creativity_rate) / 3)
-                }
+        .then(data => {
+            Campaign.update({ status: status }, { where: { id: id } })
+            if (status === "Termination") {
+                for (const i in data) {
+                    let rate_avg = 0
+                    for (let j = 0; j < data[i].applicant_rate.length; j++) {
+                        rate_avg += ((data[i].applicant_rate[j].background_rate + data[i].applicant_rate[j].trend_rate + data[i].applicant_rate[j].creativity_rate) / 3)
+                    }
 
-                if (rate_avg/data[i].applicant_rate.length >= 3) {
-                    data[i].update({is_selected : true})
+                    if (rate_avg / data[i].applicant_rate.length >= 3) {
+                        data[i].update({ is_selected: true })
+                    }
                 }
+                res.status(200).send({ status })
             }
-            res.status(200).send({status})
-        }
-    })
-    .catch ( err => {
-        res.status(500).send({
-            message: err.message
         })
-    })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message
+            })
+        })
 }
 
 export default {
-    create, 
-    findAll, 
+    create,
+    findAll,
     campaignApplicantfindAll,
     updateStatus
 }
