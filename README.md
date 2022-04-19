@@ -70,7 +70,8 @@
 
 # Development period & Team members
 
-* 2022.03.28 ~ 2022.04.21
+* 개발기간
+#### 2022.03.28 ~ 2022.04.21
 > 1 ~ 2주차 : 기획 <br>
 > 2 ~ 3주차 : 개발 <br>
 > 4주차 : 리뷰 후 리팩토링
@@ -79,7 +80,7 @@
 
 * #### FRONTEND
 
-  [precampaign-frontend](https://github.com/cskangGT/precampaign-frontend)
+[precampaign-frontend](https://github.com/cskangGT/precampaign-frontend)
 
   * 강성훈
     * 초기세팅(Webpack, Barbel)
