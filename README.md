@@ -87,7 +87,7 @@
 
 # Development period & Team members
 
-* #### 개발기간
+### 개발기간
   #### 2022.03.28 ~ 2022.04.21
   > 1 ~ 2주차 : 기획 <br>
   > 2 ~ 3주차 : 개발 <br>
@@ -95,42 +95,40 @@
 
 <br>
 
-* #### FRONTEND
+### 개발인원 & 구현파트
+   * #### [FRONTEND](https://github.com/cskangGT/precampaign-frontend)
 
-  [precampaign-frontend](https://github.com/cskangGT/precampaign-frontend)
+      * 강성훈
+        * 초기세팅(Webpack, Barbel)
+        * 캠페인리스트 페이지 기능 구현, 통신
+        * 캠페인별 신청자리스트 페이지 기능 구현, 통신
+        * 캠페인별 수락된 신청자 페이지 기능 구현, 통신
+        * 모든 수락된 신청자 페이지 기능 구현, 통신
+        * Recoil로 평점 통신 구현
 
-    * 강성훈
-      * 초기세팅(Webpack, Barbel)
-      * 캠페인리스트 페이지 기능 구현, 통신
-      * 캠페인별 신청자리스트 페이지 기능 구현, 통신
-      * 캠페인별 수락된 신청자 페이지 기능 구현, 통신
-      * 모든 수락된 신청자 페이지 기능 구현, 통신
-      * Recoil로 평점 통신 구현
+      * 김준영
+        * Modal 기능 구현
+        * 평점 기능 구현
+        * 전체적인 UI, Style 수정
 
-    * 김준영
-      * Modal 기능 구현
-      * 평점 기능 구현
-      * 전체적인 UI, Style 수정
 
-<br>
-
-* #### BACKEND
+   * #### BACKEND
   
-    * 김가람휘
-      * 초기세팅
-      * 모델링
-      * 로그인 js, ts로 구현
-      * 캠페인리스트 js, ts로 구현
-      * AWS EC2 서버에 RDS를 이용하여 배포
-      * API Document 작성
+      * 김가람휘
+        * 초기세팅
+        * 모델링
+        * 로그인 js, ts로 구현
+        * 캠페인리스트 js, ts로 구현
+        * AWS EC2 서버에 RDS를 이용하여 배포
+        * API Document 작성
 
-    * 김광일
-      * 모델링
-      * 캠페인별 신청자 리스트 js, ts로 구현
-      * 수락된 신청자 리스트 ts로 구현
-      * 평점 ts로 구현
-      * DB에 데이터 넣기
-  
+      * 김광일
+        * 모델링
+        * 캠페인별 신청자 리스트 js, ts로 구현
+        * 수락된 신청자 리스트 ts로 구현
+        * 평점 ts로 구현
+        * DB에 데이터 넣기
+
 <br>
 
 ---
